@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Read(c:\\Users\\하승호\\Downloads/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

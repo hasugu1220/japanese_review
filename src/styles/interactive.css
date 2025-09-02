@@ -1,0 +1,286 @@
+/* Interactive Vocabulary Styles */
+.mode-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #667eea;
+  background: white;
+  color: #667eea;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.interactive-vocab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.interactive-word-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 15px;
+  border-radius: 12px;
+  min-height: 100px;
+  transition: transform 0.3s ease;
+  gap: 20px;
+}
+
+.interactive-word-card:hover {
+  transform: translateY(-2px);
+}
+
+.word-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0; /* Allow text to shrink */
+  align-self: center;
+}
+
+.japanese-word {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+
+.word-meaning {
+  font-size: 1rem;
+  opacity: 0.95;
+  color: #f0f8ff;
+  animation: fadeIn 0.3s ease;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 5px;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.action-btn-small {
+  padding: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-align: center;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn-small:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: white;
+}
+
+.action-btn-small.active {
+  background: white;
+  color: #667eea;
+  border-color: white;
+}
+
+.btn-know {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4caf50;
+}
+
+.btn-know:hover {
+  background: #4caf50;
+  border-color: #4caf50;
+}
+
+.btn-dont-know {
+  background: rgba(244, 67, 54, 0.3);
+  border-color: #f44336;
+}
+
+.btn-dont-know:hover {
+  background: #f44336;
+  border-color: #f44336;
+}
+
+.btn-dont-know.checked {
+  background: #f44336;
+  border-color: #f44336;
+}
+
+/* Known Words Section */
+.known-words-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.known-words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.known-word-card {
+  background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.known-word-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.known-word-card .japanese-word {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.known-word-card .korean-meaning {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.restore-hint {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .interactive-word-card {
+    grid-template-columns: 1fr auto;
+    padding: 15px 10px;
+    gap: 10px;
+    min-height: 90px;
+  }
+
+  .action-buttons {
+    width: 85px;
+    gap: 4px;
+  }
+
+  .action-btn-small {
+    padding: 6px 4px;
+    font-size: 10px;
+    height: 32px;
+  }
+
+  .japanese-word {
+    font-size: 1.3rem;
+  }
+
+  .word-meaning {
+    font-size: 0.9rem;
+  }
+
+  .known-words-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .interactive-word-card {
+    grid-template-columns: 1fr auto;
+    padding: 12px 8px;
+    gap: 8px;
+  }
+
+  .action-buttons {
+    width: 75px;
+    gap: 3px;
+  }
+
+  .action-btn-small {
+    padding: 5px 3px;
+    font-size: 9px;
+    height: 28px;
+  }
+
+  .japanese-word {
+    font-size: 1.2rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar styling */
+.interactive-vocab-list::-webkit-scrollbar,
+.known-words-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.interactive-vocab-list::-webkit-scrollbar-track,
+.known-words-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.interactive-vocab-list::-webkit-scrollbar-thumb,
+.known-words-grid::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+}
+
+.interactive-vocab-list::-webkit-scrollbar-thumb:hover,
+.known-words-grid::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #6b4291 100%);
+}

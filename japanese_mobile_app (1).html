@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일본어 학습 프로그램 V6 - 모바일</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 컴팩트한 헤더 */
+        .header {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            color: #667eea;
+            flex: 1;
+        }
+
+        /* 햄버거 메뉴 버튼 */
+        .menu-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 드롭다운 메뉴 */
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            min-width: 150px;
+            margin-top: 5px;
+        }
+
+        .menu-dropdown.show {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
+        .menu-item:hover {
+            background: #f0f8ff;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .main-content {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 컴팩트한 필터 드롭다운 */
+        .filter-section {
+            margin-bottom: 15px;
+        }
+
+        .filter-dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .filter-dropdown:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        /* 단어 카드 그리드 - 더 많은 공간 활용 */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .vocab-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .japanese-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .korean-text {
+            font-size: 1rem;
+            opacity: 0.95;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .category-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 3px;
+        }
+
+        /* 질문생성기 - 컴팩트하게 */
+        .generator-area {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .category-dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .category-dropdown:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #4facfe;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 퀴즈 스타일 */
+        .quiz-section {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .quiz-progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .quiz-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .quiz-question {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            line-height: 1.4;
+            word-break: keep-all;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.3;
+            word-break: keep-all;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f8ff;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .quiz-option.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .question-display {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin: 5px 0;
+            line-height: 1.4;
+            word-break: keep-all;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        /* 반응형 */
+        @media (min-width: 480px) {
+            .vocab-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .vocab-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* 오버레이 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 컴팩트한 헤더 -->
+        <div class="header">
+            <h1>일본어 학습 프로그램 V6</h1>
+            <button class="menu-btn" onclick="toggleMenu()">
+                ☰ 메뉴
+            </button>
+            <!-- 드롭다운 메뉴 -->
+            <div class="menu-dropdown" id="menuDropdown">
+                <div class="menu-item active" onclick="switchTab('vocabulary')">단어장</div>
+                <div class="menu-item" onclick="switchTab('word-quiz')">단어퀴즈</div>
+                <div class="menu-item" onclick="switchTab('sentence-quiz')">문장퀴즈</div>
+                <div class="menu-item" onclick="switchTab('generator')">질문생성</div>
+            </div>
+        </div>
+
+        <!-- 오버레이 -->
+        <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+        <div class="main-content">
+            <!-- 단어장 -->
+            <div id="vocabulary" class="tab-content active">
+                <h2>단어장</h2>
+                <div class="filter-section">
+                    <select class="filter-dropdown" id="vocabFilter" onchange="filterVocab(this.value)">
+                        <option value="all">전체 보기</option>
+                    </select>
+                </div>
+                <div class="vocab-grid" id="vocab-display"></div>
+            </div>
+
+            <!-- 단어퀴즈 -->
+            <div id="word-quiz" class="tab-content">
+                <h2>단어퀴즈</h2>
+                <div class="quiz-section">
+                    <div class="quiz-progress-bar">
+                        <div id="word-quiz-progress" class="quiz-progress-fill"></div>
+                    </div>
+                    <div id="word-quiz-area">
+                        <div class="quiz-card">
+                            <p style="text-align: center; font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.5;">
+                                단어 실력을 테스트해보세요!<br>총 10문제가 출제됩니다.
+                            </p>
+                            <button class="action-btn btn-primary" onclick="beginWordQuiz()">퀴즈 시작</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 문장퀴즈 -->
+            <div id="sentence-quiz" class="tab-content">
+                <h2>문장퀴즈</h2>
+                <div class="quiz-section">
+                    <div class="quiz-progress-bar">
+                        <div id="sentence-quiz-progress" class="quiz-progress-fill"></div>
+                    </div>
+                    <div id="sentence-quiz-area">
+                        <div class="quiz-card">
+                            <p style="text-align: center; font-size: 1rem; color: #666; margin-bottom: 20px; line-height: 1.5;">
+                                문장 실력을 테스트해보세요!<br>총 10문제가 출제됩니다.
+                            </p>
+                            <button class="action-btn btn-primary" onclick="beginSentenceQuiz()">퀴즈 시작</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 질문생성기 -->
+            <div id="generator" class="tab-content">
+                <h2>질문 생성기</h2>
+                <div class="generator-area">
+                    <h3>카테고리별 의문문 생성</h3>
+                    <select class="category-dropdown" id="categorySelect">
+                        <option value="">카테고리를 선택하세요</option>
+                    </select>
+                    <button class="action-btn btn-primary" onclick="generateCategoryQuestion()">
+                        선택한 카테고리에서 생성
+                    </button>
+                    <hr style="margin: 15px 0;">
+                    <h3>랜덤 의문문 생성</h3>
+                    <button class="action-btn btn-secondary" onclick="generateRandomQuestion()">
+                        랜덤 의문문 생성
+                    </button>
+                </div>
+                <div id="question-display-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수
+        window.appData = {
+            vocabulary: {},
+            sentences: {},
+            selectedCategory: null,
+            quizData: [],
+            currentQuizIndex: 0,
+            currentScore: 0,
+            currentQuizType: '',
+            isAnswered: false
+        };
+
+        // 데이터 정의
+        window.appData.vocabulary = {
+            '지시어': [
+                { jp: "これ", kr: "이것" },
+                { jp: "それ", kr: "그것" },
+                { jp: "あれ", kr: "저것" },
+                { jp: "ここ", kr: "여기" },
+                { jp: "そこ", kr: "거기" },
+                { jp: "あそこ", kr: "저기" },
+                { jp: "どこ", kr: "어디" }
+            ],
+            '대명사': [
+                { jp: "私(わたし)", kr: "저" },
+                { jp: "おれ", kr: "나(남자용)" },
+                { jp: "ぼく", kr: "나(남자용)" },
+                { jp: "わたし", kr: "나(여자용)" },
+                { jp: "あなた", kr: "당신" },
+                { jp: "きみ", kr: "너" },
+                { jp: "おまえ", kr: "너" },
+                { jp: "あんた", kr: "너" },
+                { jp: "かれ", kr: "그" },
+                { jp: "かのじょ", kr: "그녀" },
+                { jp: "だれ", kr: "누구" },
+                { jp: "みんな", kr: "모두" }
+            ],
+            '동사': [
+                { jp: "食(た)べる", kr: "먹다" },
+                { jp: "飲(の)む", kr: "마시다" },
+                { jp: "寝(ね)る", kr: "자다" },
+                { jp: "見(み)る", kr: "보다" },
+                { jp: "行(い)く", kr: "가다" },
+                { jp: "来(く)る", kr: "오다" },
+                { jp: "する", kr: "하다" },
+                { jp: "言(い)う", kr: "말하다" },
+                { jp: "会(あ)う", kr: "만나다" },
+                { jp: "読(よ)む", kr: "읽다" },
+                { jp: "着(き)る", kr: "입다" },
+                { jp: "出(で)る", kr: "나오다" },
+                { jp: "持(も)つ", kr: "갖다/들다" },
+                { jp: "乗(の)る", kr: "타다" },
+                { jp: "買(か)う", kr: "사다" },
+                { jp: "聞(き)く", kr: "듣다" },
+                { jp: "遊(あそ)ぶ", kr: "놀다" },
+                { jp: "降(お)りる", kr: "내리다" },
+                { jp: "書(か)く", kr: "쓰다" },
+                { jp: "売(う)る", kr: "팔다" },
+                { jp: "おこる", kr: "한턱내다" }
+            ],
+            'い형용사': [
+                { jp: "美味(おい)しい", kr: "맛있다" },
+                { jp: "面白(おもしろ)い", kr: "재밌다" },
+                { jp: "痛(いた)い", kr: "아프다" },
+                { jp: "かわいい", kr: "귀엽다" },
+                { jp: "かっこういい", kr: "멋있다" },
+                { jp: "寒(さむ)い", kr: "춥다" },
+                { jp: "暑(あつ)い", kr: "덥다" },
+                { jp: "忙(いそが)しい", kr: "바쁘다" },
+                { jp: "あたたかい", kr: "따뜻하다" }
+            ],
+            'な형용사': [
+                { jp: "好(す)き", kr: "좋아하다" },
+                { jp: "嫌(きら)い", kr: "싫어하다" },
+                { jp: "きれい", kr: "아름답다" },
+                { jp: "静(しず)か", kr: "조용하다" },
+                { jp: "安全(あんぜん)", kr: "안전하다" },
+                { jp: "有名(ゆうめい)", kr: "유명하다" },
+                { jp: "大切(たいせつ)", kr: "소중하다" },
+                { jp: "簡単(かんたん)", kr: "쉽다/간단하다" }
+            ],
+            '음식': [
+                { jp: "ビール", kr: "맥주" },
+                { jp: "コーヒー", kr: "커피" },
+                { jp: "ごはん", kr: "밥" },
+                { jp: "やきとり", kr: "꼬치구이" },
+                { jp: "串(くし)かつ", kr: "꼬치튀김" },
+                { jp: "からあげ", kr: "치킨" },
+                { jp: "えだまめ", kr: "쯔루콩" },
+                { jp: "たこわさび", kr: "문어와사비" },
+                { jp: "おつまみ", kr: "안주" },
+                { jp: "やきにく", kr: "야키니쿠" },
+                { jp: "牛乳(ぎゅうにゅう)", kr: "우유" },
+                { jp: "ミルク", kr: "밀크" }
+            ],
+            '색깔': [
+                { jp: "赤(あか)", kr: "빨강" },
+                { jp: "青(あお)", kr: "파랑" },
+                { jp: "黒(くろ)", kr: "검정" },
+                { jp: "白(しろ)", kr: "하양" },
+                { jp: "緑(みどり)", kr: "녹색" },
+                { jp: "紫(むらさき)", kr: "보라색" },
+                { jp: "黄色(きいろ)", kr: "노란색" },
+                { jp: "茶色(ちゃいろ)", kr: "갈색" },
+                { jp: "ピンク", kr: "분홍색" },
+                { jp: "灰色(はいいろ)", kr: "회색" },
+                { jp: "金色(きんいろ)", kr: "금색" },
+                { jp: "銀色(ぎんいろ)", kr: "은색" }
+            ],
+            '과일': [
+                { jp: "りんご", kr: "사과" },
+                { jp: "いちご", kr: "딸기" },
+                { jp: "すいか", kr: "수박" },
+                { jp: "ぶどう", kr: "포도" },
+                { jp: "もも", kr: "복숭아" },
+                { jp: "メロン", kr: "멜론" },
+                { jp: "バナナ", kr: "바나나" },
+                { jp: "みかん", kr: "귤" },
+                { jp: "きんかん", kr: "금귤" },
+                { jp: "うり", kr: "참외" },
+                { jp: "なし", kr: "배" },
+                { jp: "かき", kr: "감" }
+            ],
+            '숫자': [
+                { jp: "いち", kr: "1" },
+                { jp: "に", kr: "2" },
+                { jp: "さん", kr: "3" },
+                { jp: "よん", kr: "4" },
+                { jp: "ご", kr: "5" },
+                { jp: "ろく", kr: "6" },
+                { jp: "なな", kr: "7" },
+                { jp: "はち", kr: "8" },
+                { jp: "きゅう", kr: "9" },
+                { jp: "じゅう", kr: "10" },
+                { jp: "百(ひゃく)", kr: "100" },
+                { jp: "千(せん)", kr: "1000" },
+                { jp: "万(まん)", kr: "10000" }
+            ],
+            '시간/날짜': [
+                { jp: "一時(いちじ)", kr: "1시" },
+                { jp: "二時(にじ)", kr: "2시" },
+                { jp: "三時(さんじ)", kr: "3시" },
+                { jp: "月曜日(げつようび)", kr: "월요일" },
+                { jp: "火曜日(かようび)", kr: "화요일" },
+                { jp: "水曜日(すいようび)", kr: "수요일" },
+                { jp: "昨日(きのう)", kr: "어제" },
+                { jp: "今日(きょう)", kr: "오늘" },
+                { jp: "明日(あした)", kr: "내일" },
+                { jp: "春(はる)", kr: "봄" },
+                { jp: "夏(なつ)", kr: "여름" },
+                { jp: "秋(あき)", kr: "가을" },
+                { jp: "冬(ふゆ)", kr: "겨울" }
+            ],
+            '교통수단': [
+                { jp: "バス", kr: "버스" },
+                { jp: "タクシー", kr: "택시" },
+                { jp: "電車(でんしゃ)", kr: "전철" },
+                { jp: "地下鉄(ちかてつ)", kr: "지하철" },
+                { jp: "自転車(じてんしゃ)", kr: "자전거" },
+                { jp: "飛行機(ひこうき)", kr: "비행기" },
+                { jp: "車(くるま)", kr: "자동차" },
+                { jp: "船(ふね)", kr: "배" },
+                { jp: "あるいて", kr: "걸어서" }
+            ],
+            '직업': [
+                { jp: "先生(せんせい)", kr: "선생님" },
+                { jp: "学生(がくせい)", kr: "학생" },
+                { jp: "会社員(かいしゃいん)", kr: "회사원" },
+                { jp: "医者(いしゃ)", kr: "의사" },
+                { jp: "歌手(かしゅ)", kr: "가수" },
+                { jp: "フリーター", kr: "백수" }
+            ],
+            '기타명사': [
+                { jp: "本(ほん)", kr: "책" },
+                { jp: "かばん", kr: "가방" },
+                { jp: "つくえ", kr: "책상" },
+                { jp: "いす", kr: "의자" },
+                { jp: "携帯(けいたい)", kr: "핸드폰" },
+                { jp: "めがね", kr: "안경" },
+                { jp: "とけい", kr: "시계" },
+                { jp: "パソコン", kr: "컴퓨터" },
+                { jp: "音楽(おんがく)", kr: "음악" },
+                { jp: "料理(りょうり)", kr: "요리" },
+                { jp: "結婚(けっこん)", kr: "결혼" },
+                { jp: "恋愛(れんあい)", kr: "연애" }
+            ]
+        };
+
+        window.appData.sentences = {
+            '5/11 존댓말과 반말': [
+                { jp: "これは本(ほん)ですか？", kr: "이것은 책입니까?" },
+                { jp: "これは本(ほん)です。", kr: "이것은 책입니다." },
+                { jp: "これは本(ほん)なの？", kr: "이것은 책이야?" },
+                { jp: "これは本(ほん)だよ。", kr: "이것은 책이야." }
+            ],
+            '5/18 인칭대명사': [
+                { jp: "私(わたし)は韓国人(かんこくじん)です。", kr: "저는 한국인입니다." },
+                { jp: "これは君(きみ)のかばんなの？", kr: "이것은 너의 가방이야?" },
+                { jp: "それは私(わたし)のかばんだよ。", kr: "그것은 내 가방이야." }
+            ],
+            '5/25 숫자': [
+                { jp: "携帯番号(けいたいばんごう)は何(なん)ですか？", kr: "핸드폰 번호가 뭐예요?" },
+                { jp: "何歳(なんさい)ですか？", kr: "몇 살이에요?" },
+                { jp: "私(わたし)は34歳(さい)です。", kr: "저는 34살입니다." }
+            ],
+            '6/1 동사와 음식': [
+                { jp: "何(なに)を飲(の)みますか？", kr: "뭘 마시겠습니까?" },
+                { jp: "とりあえず、ビールをください。", kr: "일단 맥주 주세요." },
+                { jp: "串(くし)かつをください。", kr: "꼬치튀김 주세요." }
+            ],
+            '6/8 동사+たい': [
+                { jp: "寝(ね)たいです。", kr: "자고 싶습니다." },
+                { jp: "映画(えいが)を見(み)たい。", kr: "영화를 보고 싶어." },
+                { jp: "日本(にほん)に行(い)きたい。", kr: "일본에 가고 싶어." }
+            ],
+            '6/15 있다/없다와 장소': [
+                { jp: "彼氏(かれし)いるの？", kr: "남친 있어?" },
+                { jp: "いないよ。", kr: "없어." },
+                { jp: "まじで？ありがとう！", kr: "진짜? 고마워!" }
+            ],
+            '6/29 형용사': [
+                { jp: "韓国(かんこく)の食(た)べ物(もの)は何(なに)が好(す)き？", kr: "한국 음식은 뭐가 좋아?" },
+                { jp: "焼肉(やきにく)が好(す)き。超(ちょう)美味(おい)しい！", kr: "야키니쿠가 좋아! 완전 맛있어!" },
+                { jp: "今(いま)から焼肉(やきにく)食(た)べる？", kr: "지금부터 야키니쿠 먹을래?" }
+            ],
+            '7/6 동사 활용': [
+                { jp: "今日(きょう)も寒(さむ)いね～", kr: "오늘도 춥네~" },
+                { jp: "じゃ、これ着(き)る？", kr: "그럼 이거 입을래?" },
+                { jp: "一緒(いっしょ)にコーヒー飲(の)まない？", kr: "같이 커피 마시지 않을래?" }
+            ],
+            '7/13 색깔과 과일': [
+                { jp: "好(す)きな色(いろ)は何(なに)？", kr: "좋아하는 색은 뭐야?" },
+                { jp: "好(す)きな果物(くだもの)は何(なに)？", kr: "좋아하는 과일은 뭐야?" }
+            ],
+            '7/20 できる 표현': [
+                { jp: "料理(りょうり)できるの？", kr: "요리 할 수 있어?" },
+                { jp: "簡単(かんたん)な料理(りょうり)はできるよ。", kr: "간단한 요리는 할 수 있어." }
+            ],
+            '7/27 의문사': [
+                { jp: "みゆきちゃん、料理(りょうり)できるの？", kr: "미유키짱, 요리 할 수 있어?" },
+                { jp: "じゃ、いつでも結婚(けっこん)できるね？", kr: "자, 언제든지 결혼 할 수 있겠네?" },
+                { jp: "俺(おれ)はどう？", kr: "나는 어때?" }
+            ],
+            '8/10 시간 표현': [
+                { jp: "今(いま)何時(なんじ)ですか？", kr: "지금 몇 시입니까?" },
+                { jp: "明日(あした)仕事(しごと)は何時(なんじ)から？", kr: "내일 일은 몇 시부터?" }
+            ],
+            '8/17 교통과 시간': [
+                { jp: "どのくらいかかるの？", kr: "얼마나 걸려?" }
+            ],
+            '8/24 기타': [
+                { jp: "一時間(いちじかん)もかかる。", kr: "한시간이나 걸려." },
+                { jp: "みゆきちゃん、二次会(にじかい)どう？", kr: "미유키짱, 2차 어때?" },
+                { jp: "今(いま)から？", kr: "지금부터?" }
+            ]
+        };
+
+        // 메뉴 토글 함수
+        function toggleMenu() {
+            const dropdown = document.getElementById('menuDropdown');
+            const overlay = document.getElementById('overlay');
+            
+            dropdown.classList.toggle('show');
+            overlay.classList.toggle('show');
+        }
+
+        function closeMenu() {
+            const dropdown = document.getElementById('menuDropdown');
+            const overlay = document.getElementById('overlay');
+            
+            dropdown.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        // 탭 전환 함수
+        function switchTab(tabId) {
+            // 메뉴 아이템 활성화
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 탭 콘텐츠 전환
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            // 메뉴 닫기
+            closeMenu();
+
+            // 각 탭별 초기화
+            if (tabId === 'vocabulary') {
+                loadVocabulary();
+            } else if (tabId === 'generator') {
+                loadGenerator();
+            }
+        }
+
+        function loadVocabulary() {
+            createVocabFilter();
+            displayVocabulary('all');
+        }
+
+        function createVocabFilter() {
+            const select = document.getElementById('vocabFilter');
+            let html = '<option value="all">전체 보기</option>';
+            
+            Object.keys(window.appData.vocabulary).forEach(category => {
+                html += `<option value="${category}">${category}</option>`;
+            });
+            
+            select.innerHTML = html;
+        }
+
+        function filterVocab(category) {
+            displayVocabulary(category);
+        }
+
+        function displayVocabulary(filter) {
+            const container = document.getElementById('vocab-display');
+            let html = '';
+
+            if (filter === 'all') {
+                Object.keys(window.appData.vocabulary).forEach(category => {
+                    window.appData.vocabulary[category].forEach(word => {
+                        html += makeVocabCard(word.jp, word.kr, category);
+                    });
+                });
+            } else {
+                if (window.appData.vocabulary[filter]) {
+                    window.appData.vocabulary[filter].forEach(word => {
+                        html += makeVocabCard(word.jp, word.kr, filter);
+                    });
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        function makeVocabCard(japanese, korean, category) {
+            return `<div class="vocab-card">
+                       <div class="japanese-text">${japanese}</div>
+                       <div class="korean-text">${korean}</div>
+                       <div class="category-label">${category}</div>
+                   </div>`;
+        }
+
+        function loadGenerator() {
+            createCategorySelect();
+        }
+
+        function createCategorySelect() {
+            const select = document.getElementById('categorySelect');
+            let html = '<option value="">카테고리를 선택하세요</option>';
+            
+            Object.keys(window.appData.sentences).forEach(category => {
+                html += `<option value="${category}">${category}</option>`;
+            });
+            
+            select.innerHTML = html;
+        }
+
+        function generateCategoryQuestion() {
+            const select = document.getElementById('categorySelect');
+            const selectedCategory = select.value;
+            
+            if (!selectedCategory) {
+                alert('카테고리를 선택해주세요.');
+                return;
+            }
+
+            const items = window.appData.sentences[selectedCategory] || [];
+            const questions = items.filter(item => 
+                item.jp.endsWith('？') || item.jp.endsWith('?')
+            );
+
+            if (questions.length === 0) {
+                alert('선택한 카테고리에 의문문이 없습니다.');
+                return;
+            }
+
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            displayGeneratedQuestion(randomQuestion.jp);
+        }
+
+        function generateRandomQuestion() {
+            const allQuestions = [];
+            
+            Object.values(window.appData.sentences).forEach(items => {
+                items.forEach(item => {
+                    if (item.jp.endsWith('？') || item.jp.endsWith('?')) {
+                        allQuestions.push(item.jp);
+                    }
+                });
+            });
+
+            if (allQuestions.length === 0) {
+                alert('의문문이 없습니다.');
+                return;
+            }
+
+            const randomQuestion = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+            displayGeneratedQuestion(randomQuestion);
+        }
+
+        function displayGeneratedQuestion(text) {
+            const container = document.getElementById('question-display-area');
+            container.innerHTML = `
+                <div class="question-display">
+                    <button class="copy-button" onclick="copyQuestionText('${text.replace(/'/g, "\\'")}')">복사</button>
+                    <div class="question-text">${text}</div>
+                </div>`;
+        }
+
+        function copyQuestionText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('복사되었습니다!');
+            }).catch(() => {
+                alert('복사에 실패했습니다.');
+            });
+        }
+
+        function beginWordQuiz() {
+            window.appData.currentQuizType = 'word';
+            createWordQuiz();
+        }
+
+        function beginSentenceQuiz() {
+            window.appData.currentQuizType = 'sentence';
+            createSentenceQuiz();
+        }
+
+        function createWordQuiz() {
+            const allWords = [];
+            Object.keys(window.appData.vocabulary).forEach(category => {
+                window.appData.vocabulary[category].forEach(word => {
+                    allWords.push({
+                        question: `"${word.jp}"의 뜻은?`,
+                        answer: word.kr,
+                        japanese: word.jp
+                    });
+                });
+            });
+
+            window.appData.quizData = [];
+            const usedIndices = [];
+
+            for (let i = 0; i < Math.min(10, allWords.length); i++) {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * allWords.length);
+                } while (usedIndices.includes(randomIndex));
+                
+                usedIndices.push(randomIndex);
+                const word = allWords[randomIndex];
+                
+                const wrongAnswers = [];
+                while (wrongAnswers.length < 3) {
+                    const wrongIndex = Math.floor(Math.random() * allWords.length);
+                    const wrongWord = allWords[wrongIndex];
+                    
+                    if (wrongWord.answer !== word.answer && !wrongAnswers.includes(wrongWord.answer)) {
+                        wrongAnswers.push(wrongWord.answer);
+                    }
+                }
+                
+                const options = [word.answer, ...wrongAnswers];
+                shuffleArray(options);
+                
+                window.appData.quizData.push({
+                    question: word.question,
+                    options: options,
+                    correct: word.answer,
+                    explanation: `${word.japanese} = ${word.answer}`
+                });
+            }
+
+            window.appData.currentQuizIndex = 0;
+            window.appData.currentScore = 0;
+            window.appData.isAnswered = false;
+            displayQuizQuestion();
+        }
+
+        function createSentenceQuiz() {
+            const allSentences = [];
+            Object.values(window.appData.sentences).forEach(items => {
+                items.forEach(item => {
+                    allSentences.push({
+                        question: `"${item.jp}"를 한국어로 번역하면?`,
+                        answer: item.kr,
+                        japanese: item.jp
+                    });
+                });
+            });
+
+            window.appData.quizData = [];
+            const usedIndices = [];
+
+            for (let i = 0; i < Math.min(10, allSentences.length); i++) {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * allSentences.length);
+                } while (usedIndices.includes(randomIndex));
+                
+                usedIndices.push(randomIndex);
+                const sentence = allSentences[randomIndex];
+                
+                const wrongAnswers = [];
+                while (wrongAnswers.length < 3) {
+                    const wrongIndex = Math.floor(Math.random() * allSentences.length);
+                    const wrongSentence = allSentences[wrongIndex];
+                    
+                    if (wrongSentence.answer !== sentence.answer && !wrongAnswers.includes(wrongSentence.answer)) {
+                        wrongAnswers.push(wrongSentence.answer);
+                    }
+                }
+                
+                const options = [sentence.answer, ...wrongAnswers];
+                shuffleArray(options);
+                
+                window.appData.quizData.push({
+                    question: sentence.question,
+                    options: options,
+                    correct: sentence.answer,
+                    explanation: `${sentence.japanese} = ${sentence.answer}`
+                });
+            }
+
+            window.appData.currentQuizIndex = 0;
+            window.appData.currentScore = 0;
+            window.appData.isAnswered = false;
+            displayQuizQuestion();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function displayQuizQuestion() {
+            const contentId = window.appData.currentQuizType === 'word' ? 'word-quiz-area' : 'sentence-quiz-area';
+            const progressId = window.appData.currentQuizType === 'word' ? 'word-quiz-progress' : 'sentence-quiz-progress';
+            
+            const progress = (window.appData.currentQuizIndex / window.appData.quizData.length) * 100;
+            const progressBar = document.getElementById(progressId);
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+
+            if (window.appData.currentQuizIndex >= window.appData.quizData.length) {
+                displayQuizResults();
+                return;
+            }
+
+            const question = window.appData.quizData[window.appData.currentQuizIndex];
+            window.appData.isAnswered = false;
+
+            const optionsHtml = question.options.map(option => 
+                `<button class="quiz-option" onclick="chooseAnswer('${option.replace(/'/g, "\\'")}')">${option}</button>`
+            ).join('');
+
+            const container = document.getElementById(contentId);
+            if (container) {
+                container.innerHTML = `
+                    <div class="quiz-card">
+                        <div style="text-align: center; margin-bottom: 15px; font-size: 1rem; font-weight: bold;">
+                            점수: ${window.appData.currentScore}/${window.appData.quizData.length} | 문제 ${window.appData.currentQuizIndex + 1}/${window.appData.quizData.length}
+                        </div>
+                        <div class="quiz-question">${question.question}</div>
+                        <div class="quiz-options">${optionsHtml}</div>
+                        <div id="quiz-explanation" style="display: none; background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin-top: 15px; border-radius: 5px; font-size: 14px; line-height: 1.5;">
+                            ${question.explanation}
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function chooseAnswer(selected) {
+            if (window.appData.isAnswered) return;
+            window.appData.isAnswered = true;
+
+            const question = window.appData.quizData[window.appData.currentQuizIndex];
+            const buttons = document.querySelectorAll('.quiz-option');
+
+            buttons.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                const btnText = btn.textContent.trim();
+                
+                if (btnText === question.correct) {
+                    btn.classList.add('correct');
+                } else if (btnText === selected && selected !== question.correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            if (selected === question.correct) {
+                window.appData.currentScore++;
+            }
+
+            const explanation = document.getElementById('quiz-explanation');
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+
+            setTimeout(() => {
+                window.appData.currentQuizIndex++;
+                displayQuizQuestion();
+            }, 2000);
+        }
+
+        function displayQuizResults() {
+            const contentId = window.appData.currentQuizType === 'word' ? 'word-quiz-area' : 'sentence-quiz-area';
+            const progressId = window.appData.currentQuizType === 'word' ? 'word-quiz-progress' : 'sentence-quiz-progress';
+            
+            const progressBar = document.getElementById(progressId);
+            if (progressBar) {
+                progressBar.style.width = '100%';
+            }
+
+            const percentage = (window.appData.currentScore / window.appData.quizData.length) * 100;
+            let grade, gradeText;
+
+            if (percentage >= 90) {
+                grade = 'S'; gradeText = '완벽합니다!';
+            } else if (percentage >= 80) {
+                grade = 'A'; gradeText = '훌륭합니다!';
+            } else if (percentage >= 70) {
+                grade = 'B'; gradeText = '잘했습니다!';
+            } else if (percentage >= 60) {
+                grade = 'C'; gradeText = '조금 더 노력하세요!';
+            } else {
+                grade = 'D'; gradeText = '더 공부가 필요해요!';
+            }
+
+            const restartFunction = window.appData.currentQuizType === 'word' ? 'beginWordQuiz' : 'beginSentenceQuiz';
+
+            const container = document.getElementById(contentId);
+            if (container) {
+                container.innerHTML = `
+                    <div class="quiz-card">
+                        <h3 style="text-align: center; margin-bottom: 20px;">퀴즈 완료!</h3>
+                        <div style="text-align: center; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold;">
+                            최종 점수: ${window.appData.currentScore}/${window.appData.quizData.length} (${percentage.toFixed(1)}%)
+                        </div>
+                        <div style="text-align: center; font-size: 1.5rem; font-weight: bold; padding: 20px; border-radius: 15px; color: white; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); margin: 20px 0;">
+                            등급: ${grade}<br>
+                            <small style="font-size: 1rem; margin-top: 5px; display: block;">${gradeText}</small>
+                        </div>
+                        <button class="action-btn btn-primary" onclick="${restartFunction}()">다시 도전</button>
+                    </div>`;
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            loadVocabulary();
+        };
+    </script>
+</body>
+</html>
