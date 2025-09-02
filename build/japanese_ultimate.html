@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>일본어 학습 프로그램 - Ultimate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans JP', sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 428px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .menu-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: none;
+            min-width: 150px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .menu-dropdown.show {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .menu-item:hover {
+            background: #faf5ff;
+        }
+
+        .menu-item.active {
+            background: #7c3aed;
+            color: white;
+        }
+
+        /* 스크롤 프로그레스 바 */
+        .scroll-progress {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            z-index: 99;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .scroll-progress.visible {
+            opacity: 1;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: rgba(124, 58, 237, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 99;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .scroll-indicator.visible {
+            opacity: 1;
+        }
+
+        .main-content {
+            padding: 16px;
+            min-height: calc(100vh - 60px);
+            padding-top: 24px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            background: #f5f5f5;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #666;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
+        }
+
+        .filter-dropdown {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            color: #7c3aed;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .interactive-vocab-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: calc(100vh - 320px);
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        .interactive-word-card {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            min-height: 110px;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .interactive-word-card:active {
+            transform: scale(0.98);
+        }
+
+        .word-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .japanese-word {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .japanese-word ruby rt {
+            font-size: 0.55em;
+            opacity: 0.9;
+        }
+
+        .word-meaning {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            color: #f0f8ff;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 46px 46px;
+            grid-template-rows: 40px 40px;
+            gap: 4px;
+        }
+
+        .action-btn-small {
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .action-btn-small:active {
+            transform: scale(0.95);
+        }
+
+        .action-btn-small.active {
+            background: white;
+            color: #7c3aed;
+        }
+
+        .action-btn-small:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-know {
+            background: rgba(34, 197, 94, 0.25);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .btn-dont-know {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-dont-know.checked {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .bookmark-btn {
+            padding: 10px 16px;
+            background: #fbbf24;
+            color: #78350f;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .bookmark-btn:hover {
+            background: #f59e0b;
+        }
+
+        .bookmarked {
+            animation: highlight 2s ease;
+        }
+
+        @keyframes highlight {
+            0%, 100% { box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2); }
+            50% { box-shadow: 0 0 20px 3px #fbbf24; }
+        }
+
+        .level-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .known-words-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+
+        .known-word-card {
+            background: linear-gradient(135deg, #22c55e 0%, #84cc16 100%);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(34, 197, 94, 0.2);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 48px 24px;
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 퀴즈 스타일 */
+        .quiz-category-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .quiz-cat-btn {
+            padding: 10px 16px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .quiz-cat-btn.active {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .quiz-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 32px 24px;
+            margin-bottom: 24px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .quiz-question {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .quiz-furigana {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .show-answer-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .show-answer-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .quiz-answer {
+            color: #fff9c4;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .quiz-control-btn {
+            padding: 12px 24px;
+            background: #7c3aed;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .quiz-progress {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #7c3aed;
+            border-radius: 3px;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 20px;
+            }
+            
+            .app-container {
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                border-radius: 20px;
+                overflow: hidden;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>일본어 학습 Ultimate</h1>
+            <button class="menu-btn" onclick="toggleMenu()">메뉴</button>
+            <div class="menu-dropdown" id="menuDropdown">
+                <div class="menu-item active" onclick="switchTab('vocabulary')">단어장</div>
+                <div class="menu-item" onclick="switchTab('quiz')">퀴즈</div>
+                <div class="menu-item" onclick="downloadHTML()">다운로드</div>
+            </div>
+        </div>
+
+        <!-- 스크롤 프로그레스 바 -->
+        <div class="scroll-progress" id="scrollProgress">
+            <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+        </div>
+        <div class="scroll-indicator" id="scrollIndicator">0 / 0</div>
+
+        <div class="main-content">
+            <!-- 단어장 탭 -->
+            <div id="vocabulary" class="tab-content active">
+                <h2 style="font-size: 1.2rem; margin-bottom: 16px; color: #374151;">인터랙티브 단어장</h2>
+                
+                <div class="mode-selector">
+                    <button class="mode-btn active" onclick="switchMode('study')">
+                        학습 모드 (<span id="study-count">0</span>)
+                    </button>
+                    <button class="mode-btn" onclick="switchMode('known')">
+                        아는 단어 (<span id="known-count">0</span>)
+                    </button>
+                </div>
+
+                <div id="study-mode">
+                    <div class="level-selector">
+                        <select class="filter-dropdown" id="levelFilter" onchange="filterLevel()" style="flex: 1;">
+                            <option value="lesson">수업 단어</option>
+                            <option value="n5n3">JLPT N5-N3</option>
+                        </select>
+                        <button class="bookmark-btn" onclick="goToBookmark()" title="책갈피 위치로 이동">📖 책갈피</button>
+                    </div>
+                    <select class="filter-dropdown" id="categoryFilter" onchange="filterCategory()">
+                        <option value="all">전체 보기</option>
+                    </select>
+
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalWords">0</div>
+                            <div class="stat-label">전체</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="currentPosition">0</div>
+                            <div class="stat-label">현재 위치</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="learnedPercentage">0%</div>
+                            <div class="stat-label">학습률</div>
+                        </div>
+                    </div>
+
+                    <div class="interactive-vocab-list" id="vocab-list" onscroll="updateScrollProgress()"></div>
+                </div>
+
+                <div id="known-mode" class="hidden">
+                    <button class="action-btn" onclick="restoreAll()">모든 단어 되돌리기</button>
+                    <div class="known-words-grid" id="known-list"></div>
+                </div>
+            </div>
+
+            <!-- 퀴즈 탭 -->
+            <div id="quiz" class="tab-content">
+                <h2 style="font-size: 1.2rem; margin-bottom: 16px; color: #374151;">문장 퀴즈</h2>
+                
+                <div class="quiz-category-selector">
+                    <button class="quiz-cat-btn active" onclick="switchQuizCategory('basic')">기본 의문문</button>
+                    <button class="quiz-cat-btn" onclick="switchQuizCategory('time')">시간 관련</button>
+                    <button class="quiz-cat-btn" onclick="switchQuizCategory('location')">장소/이동</button>
+                    <button class="quiz-cat-btn" onclick="switchQuizCategory('daily')">일상 대화</button>
+                </div>
+
+                <div class="quiz-content" id="quiz-content">
+                    <div class="quiz-card" id="quiz-card">
+                        <div class="quiz-question" id="quiz-question"></div>
+                        <div class="quiz-furigana" id="quiz-furigana"></div>
+                        <button class="show-answer-btn" onclick="toggleAnswer()">답 보기</button>
+                        <div class="quiz-answer hidden" id="quiz-answer"></div>
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="quiz-control-btn" onclick="previousQuestion()">이전</button>
+                        <span class="quiz-progress" id="quiz-progress">1 / 10</span>
+                        <button class="quiz-control-btn" onclick="nextQuestion()">다음</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 내장 N5-N3 단어 데이터 (전체)
+        const n5n3Vocabulary = {
+            '명사_N5': [
+                { jp: '人', kr: '사람', furigana: 'ひと' },
+                { jp: '子供', kr: '아이', furigana: 'こども' },
+                { jp: '女', kr: '여자', furigana: 'おんな' },
+                { jp: '男', kr: '남자', furigana: 'おとこ' },
+                { jp: '名前', kr: '이름', furigana: 'なまえ' },
+                { jp: '本', kr: '책', furigana: 'ほん' },
+                { jp: '机', kr: '책상', furigana: 'つくえ' },
+                { jp: '椅子', kr: '의자', furigana: 'いす' },
+                { jp: '部屋', kr: '방', furigana: 'へや' },
+                { jp: '教室', kr: '교실', furigana: 'きょうしつ' },
+                { jp: '窓', kr: '창문', furigana: 'まど' },
+                { jp: 'ドア', kr: '문', furigana: null },
+                { jp: '鞄', kr: '가방', furigana: 'かばん' },
+                { jp: '財布', kr: '지갑', furigana: 'さいふ' },
+                { jp: '傘', kr: '우산', furigana: 'かさ' },
+                { jp: '鍵', kr: '열쇠', furigana: 'かぎ' },
+                { jp: '時計', kr: '시계', furigana: 'とけい' },
+                { jp: '写真', kr: '사진', furigana: 'しゃしん' },
+                { jp: '電話', kr: '전화', furigana: 'でんわ' },
+                { jp: 'テレビ', kr: 'TV', furigana: null },
+                { jp: 'パソコン', kr: '컴퓨터', furigana: null },
+                { jp: '新聞', kr: '신문', furigana: 'しんぶん' },
+                { jp: '雑誌', kr: '잡지', furigana: 'ざっし' },
+                { jp: '辞書', kr: '사전', furigana: 'じしょ' },
+                { jp: 'ペン', kr: '펜', furigana: null },
+                { jp: '鉛筆', kr: '연필', furigana: 'えんぴつ' },
+                { jp: 'ノート', kr: '노트', furigana: null },
+                { jp: '紙', kr: '종이', furigana: 'かみ' },
+                { jp: '手紙', kr: '편지', furigana: 'てがみ' },
+                { jp: '切手', kr: '우표', furigana: 'きって' },
+                { jp: '切符', kr: '표', furigana: 'きっぷ' },
+                { jp: '荷物', kr: '짐', furigana: 'にもつ' },
+                { jp: '箱', kr: '상자', furigana: 'はこ' },
+                { jp: '花', kr: '꽃', furigana: 'はな' },
+                { jp: '木', kr: '나무', furigana: 'き' },
+                { jp: '山', kr: '산', furigana: 'やま' },
+                { jp: '川', kr: '강', furigana: 'かわ' },
+                { jp: '海', kr: '바다', furigana: 'うみ' },
+                { jp: '空', kr: '하늘', furigana: 'そら' },
+                { jp: '雨', kr: '비', furigana: 'あめ' },
+                { jp: '雪', kr: '눈', furigana: 'ゆき' },
+                { jp: '風', kr: '바람', furigana: 'かぜ' },
+                { jp: '天気', kr: '날씨', furigana: 'てんき' },
+                { jp: '朝', kr: '아침', furigana: 'あさ' },
+                { jp: '昼', kr: '낮', furigana: 'ひる' },
+                { jp: '夕方', kr: '저녁', furigana: 'ゆうがた' },
+                { jp: '夜', kr: '밤', furigana: 'よる' },
+                { jp: '今日', kr: '오늘', furigana: 'きょう' },
+                { jp: '昨日', kr: '어제', furigana: 'きのう' },
+                { jp: '明日', kr: '내일', furigana: 'あした' },
+                { jp: '今週', kr: '이번주', furigana: 'こんしゅう' },
+                { jp: '先週', kr: '지난주', furigana: 'せんしゅう' },
+                { jp: '来週', kr: '다음주', furigana: 'らいしゅう' }
+            ],
+            '동사_N5': [
+                { jp: '行く', kr: '가다', furigana: 'いく' },
+                { jp: '来る', kr: '오다', furigana: 'くる' },
+                { jp: '帰る', kr: '돌아가다', furigana: 'かえる' },
+                { jp: '歩く', kr: '걷다', furigana: 'あるく' },
+                { jp: '走る', kr: '달리다', furigana: 'はしる' },
+                { jp: '止まる', kr: '멈추다', furigana: 'とまる' },
+                { jp: '曲がる', kr: '돌다', furigana: 'まがる' },
+                { jp: '渡る', kr: '건너다', furigana: 'わたる' },
+                { jp: '登る', kr: '오르다', furigana: 'のぼる' },
+                { jp: '降りる', kr: '내리다', furigana: 'おりる' },
+                { jp: '入る', kr: '들어가다', furigana: 'はいる' },
+                { jp: '出る', kr: '나가다', furigana: 'でる' },
+                { jp: '着く', kr: '도착하다', furigana: 'つく' },
+                { jp: '出発する', kr: '출발하다', furigana: 'しゅっぱつする' },
+                { jp: '到着する', kr: '도착하다', furigana: 'とうちゃくする' },
+                { jp: '乗る', kr: '타다', furigana: 'のる' },
+                { jp: '運転する', kr: '운전하다', furigana: 'うんてんする' },
+                { jp: '飛ぶ', kr: '날다', furigana: 'とぶ' },
+                { jp: '泳ぐ', kr: '수영하다', furigana: 'およぐ' },
+                { jp: '見る', kr: '보다', furigana: 'みる' },
+                { jp: '見える', kr: '보이다', furigana: 'みえる' },
+                { jp: '聞く', kr: '듣다', furigana: 'きく' },
+                { jp: '聞こえる', kr: '들리다', furigana: 'きこえる' },
+                { jp: '言う', kr: '말하다', furigana: 'いう' },
+                { jp: '話す', kr: '이야기하다', furigana: 'はなす' },
+                { jp: '答える', kr: '대답하다', furigana: 'こたえる' },
+                { jp: '教える', kr: '가르치다', furigana: 'おしえる' },
+                { jp: '習う', kr: '배우다', furigana: 'ならう' },
+                { jp: '覚える', kr: '외우다', furigana: 'おぼえる' },
+                { jp: '忘れる', kr: '잊다', furigana: 'わすれる' },
+                { jp: '思う', kr: '생각하다', furigana: 'おもう' },
+                { jp: '考える', kr: '생각하다', furigana: 'かんがえる' },
+                { jp: '知る', kr: '알다', furigana: 'しる' },
+                { jp: '分かる', kr: '알다/이해하다', furigana: 'わかる' },
+                { jp: '食べる', kr: '먹다', furigana: 'たべる' },
+                { jp: '飲む', kr: '마시다', furigana: 'のむ' },
+                { jp: '吸う', kr: '빨다/피우다', furigana: 'すう' },
+                { jp: '噛む', kr: '씹다', furigana: 'かむ' },
+                { jp: '料理する', kr: '요리하다', furigana: 'りょうりする' },
+                { jp: '作る', kr: '만들다', furigana: 'つくる' },
+                { jp: '焼く', kr: '굽다', furigana: 'やく' },
+                { jp: '煮る', kr: '끓이다', furigana: 'にる' },
+                { jp: '切る', kr: '자르다', furigana: 'きる' },
+                { jp: '混ぜる', kr: '섞다', furigana: 'まぜる' },
+                { jp: '洗う', kr: '씻다', furigana: 'あらう' },
+                { jp: '拭く', kr: '닦다', furigana: 'ふく' },
+                { jp: '掃除する', kr: '청소하다', furigana: 'そうじする' },
+                { jp: '片付ける', kr: '정리하다', furigana: 'かたづける' },
+                { jp: '捨てる', kr: '버리다', furigana: 'すてる' }
+            ],
+            'い형용사_N5': [
+                { jp: '大きい', kr: '크다', furigana: 'おおきい' },
+                { jp: '小さい', kr: '작다', furigana: 'ちいさい' },
+                { jp: '多い', kr: '많다', furigana: 'おおい' },
+                { jp: '少ない', kr: '적다', furigana: 'すくない' },
+                { jp: '長い', kr: '길다', furigana: 'ながい' },
+                { jp: '短い', kr: '짧다', furigana: 'みじかい' },
+                { jp: '高い', kr: '높다/비싸다', furigana: 'たかい' },
+                { jp: '低い', kr: '낮다', furigana: 'ひくい' },
+                { jp: '安い', kr: '싸다', furigana: 'やすい' },
+                { jp: '新しい', kr: '새롭다', furigana: 'あたらしい' },
+                { jp: '古い', kr: '오래되다', furigana: 'ふるい' },
+                { jp: '若い', kr: '젊다', furigana: 'わかい' },
+                { jp: '良い', kr: '좋다', furigana: 'よい/いい' },
+                { jp: '悪い', kr: '나쁘다', furigana: 'わるい' },
+                { jp: '広い', kr: '넓다', furigana: 'ひろい' },
+                { jp: '狭い', kr: '좁다', furigana: 'せまい' },
+                { jp: '太い', kr: '굵다', furigana: 'ふとい' },
+                { jp: '細い', kr: '가늘다', furigana: 'ほそい' },
+                { jp: '厚い', kr: '두껍다', furigana: 'あつい' },
+                { jp: '薄い', kr: '얇다', furigana: 'うすい' },
+                { jp: '重い', kr: '무겁다', furigana: 'おもい' },
+                { jp: '軽い', kr: '가볍다', furigana: 'かるい' },
+                { jp: '強い', kr: '강하다', furigana: 'つよい' },
+                { jp: '弱い', kr: '약하다', furigana: 'よわい' },
+                { jp: '固い', kr: '단단하다', furigana: 'かたい' },
+                { jp: '柔らかい', kr: '부드럽다', furigana: 'やわらかい' },
+                { jp: '熱い', kr: '뜨겁다', furigana: 'あつい' },
+                { jp: '冷たい', kr: '차갑다', furigana: 'つめたい' },
+                { jp: '暖かい', kr: '따뜻하다', furigana: 'あたたかい' },
+                { jp: '涼しい', kr: '시원하다', furigana: 'すずしい' }
+            ],
+            'な형용사_N5': [
+                { jp: '好きだ', kr: '좋아하다', furigana: 'すきだ' },
+                { jp: '嫌いだ', kr: '싫어하다', furigana: 'きらいだ' },
+                { jp: '静かだ', kr: '조용하다', furigana: 'しずかだ' },
+                { jp: '便利だ', kr: '편리하다', furigana: 'べんりだ' },
+                { jp: '元気だ', kr: '건강하다', furigana: 'げんきだ' },
+                { jp: '綺麗だ', kr: '아름답다/깨끗하다', furigana: 'きれいだ' },
+                { jp: '安全だ', kr: '안전하다', furigana: 'あんぜんだ' },
+                { jp: '有名だ', kr: '유명하다', furigana: 'ゆうめいだ' },
+                { jp: '大切だ', kr: '소중하다', furigana: 'たいせつだ' },
+                { jp: '簡単だ', kr: '간단하다', furigana: 'かんたんだ' },
+                { jp: '大変だ', kr: '힘들다', furigana: 'たいへんだ' },
+                { jp: '上手だ', kr: '잘하다', furigana: 'じょうずだ' },
+                { jp: '下手だ', kr: '못하다', furigana: 'へただ' },
+                { jp: '親切だ', kr: '친절하다', furigana: 'しんせつだ' },
+                { jp: '丈夫だ', kr: '튼튼하다', furigana: 'じょうぶだ' },
+                { jp: '健康だ', kr: '건강하다', furigana: 'けんこうだ' },
+                { jp: '病気だ', kr: '아프다', furigana: 'びょうきだ' },
+                { jp: '暇だ', kr: '한가하다', furigana: 'ひまだ' },
+                { jp: '必要だ', kr: '필요하다', furigana: 'ひつようだ' },
+                { jp: '大事だ', kr: '중요하다', furigana: 'だいじだ' }
+            ],
+            '부사_N5': [
+                { jp: 'いつも', kr: '항상', furigana: null },
+                { jp: 'よく', kr: '자주/잘', furigana: null },
+                { jp: 'たいてい', kr: '대개', furigana: null },
+                { jp: '時々', kr: '때때로', furigana: 'ときどき' },
+                { jp: 'たまに', kr: '가끔', furigana: null },
+                { jp: 'あまり', kr: '별로(부정)', furigana: null },
+                { jp: '全然', kr: '전혀(부정)', furigana: 'ぜんぜん' },
+                { jp: 'とても', kr: '매우', furigana: null },
+                { jp: 'すごく', kr: '엄청', furigana: null },
+                { jp: '大変', kr: '매우/힘들게', furigana: 'たいへん' },
+                { jp: 'ちょっと', kr: '조금', furigana: null },
+                { jp: '少し', kr: '조금', furigana: 'すこし' },
+                { jp: 'たくさん', kr: '많이', furigana: null },
+                { jp: 'もっと', kr: '더', furigana: null },
+                { jp: '一番', kr: '가장', furigana: 'いちばん' },
+                { jp: 'だいたい', kr: '대략', furigana: null },
+                { jp: 'ほとんど', kr: '거의', furigana: null },
+                { jp: '全部', kr: '전부', furigana: 'ぜんぶ' },
+                { jp: 'みんな', kr: '모두', furigana: null },
+                { jp: '一緒に', kr: '함께', furigana: 'いっしょに' }
+            ]
+        };
+
+        // 수업 단어 데이터
+        const lessonVocabulary = {
+            '명사': [
+                { jp: 'これ', kr: '이것', furigana: null },
+                { jp: 'それ', kr: '그것', furigana: null },
+                { jp: '私', kr: '저/나', furigana: 'わたし' },
+                { jp: '本', kr: '책', furigana: 'ほん' },
+                { jp: '机', kr: '책상', furigana: 'つくえ' },
+                { jp: '時計', kr: '시계', furigana: 'とけい' },
+                { jp: '電車', kr: '전철', furigana: 'でんしゃ' },
+                { jp: '学校', kr: '학교', furigana: 'がっこう' },
+                { jp: '会社', kr: '회사', furigana: 'かいしゃ' },
+                { jp: '家', kr: '집', furigana: 'いえ' },
+                { jp: '料理', kr: '요리', furigana: 'りょうり' },
+                { jp: '仕事', kr: '일, 직업', furigana: 'しごと' },
+                { jp: '結婚', kr: '결혼', furigana: 'けっこん' },
+                { jp: '恋愛', kr: '연애', furigana: 'れんあい' },
+                { jp: '手紙', kr: '편지', furigana: 'てがみ' },
+                { jp: 'お金', kr: '돈', furigana: 'おかね' },
+                { jp: '映画', kr: '영화', furigana: 'えいが' },
+                { jp: '音楽', kr: '음악', furigana: 'おんがく' },
+                { jp: '日記', kr: '일기', furigana: 'にっき' },
+                { jp: '話', kr: '이야기', furigana: 'はなし' },
+                { jp: '夜中', kr: '한밤중', furigana: 'よなか' },
+                { jp: 'バス', kr: '버스', furigana: null },
+                { jp: 'タクシー', kr: '택시', furigana: null },
+                { jp: '地下鉄', kr: '지하철', furigana: 'ちかてつ' },
+                { jp: '自転車', kr: '자전거', furigana: 'じてんしゃ' },
+                { jp: '飛行機', kr: '비행기', furigana: 'ひこうき' },
+                { jp: '車', kr: '자동차', furigana: 'くるま' },
+                { jp: '船', kr: '배', furigana: 'ふね' },
+                { jp: '春', kr: '봄', furigana: 'はる' },
+                { jp: '夏', kr: '여름', furigana: 'なつ' },
+                { jp: '秋', kr: '가을', furigana: 'あき' },
+                { jp: '冬', kr: '겨울', furigana: 'ふゆ' },
+                { jp: '朝', kr: '아침', furigana: 'あさ' },
+                { jp: '昼', kr: '낮', furigana: 'ひる' },
+                { jp: '夜', kr: '저녁, 밤', furigana: 'よる' },
+                { jp: '男', kr: '남자', furigana: 'おとこ' },
+                { jp: '女', kr: '여자', furigana: 'おんな' },
+                { jp: '犬', kr: '개', furigana: 'いぬ' },
+                { jp: '猫', kr: '고양이', furigana: 'ねこ' },
+                { jp: '人', kr: '사람', furigana: 'ひと' },
+                { jp: '先生', kr: '선생님', furigana: 'せんせい' },
+                { jp: '学生', kr: '학생', furigana: 'がくせい' },
+                { jp: '会社員', kr: '회사원', furigana: 'かいしゃいん' },
+                { jp: '医者', kr: '의사', furigana: 'いしゃ' },
+                { jp: '歌手', kr: '가수', furigana: 'かしゅ' }
+            ],
+            '동사': [
+                { jp: '食べる', kr: '먹다', furigana: 'たべる' },
+                { jp: '飲む', kr: '마시다', furigana: 'のむ' },
+                { jp: '見る', kr: '보다', furigana: 'みる' },
+                { jp: '行く', kr: '가다', furigana: 'いく' },
+                { jp: '来る', kr: '오다', furigana: 'くる' },
+                { jp: '読む', kr: '읽다', furigana: 'よむ' },
+                { jp: '書く', kr: '쓰다', furigana: 'かく' },
+                { jp: '話す', kr: '말하다', furigana: 'はなす' },
+                { jp: '聞く', kr: '듣다', furigana: 'きく' },
+                { jp: '作る', kr: '만들다', furigana: 'つくる' },
+                { jp: '乗る', kr: '타다', furigana: 'のる' },
+                { jp: '買う', kr: '사다', furigana: 'かう' },
+                { jp: '売る', kr: '팔다', furigana: 'うる' },
+                { jp: '遊ぶ', kr: '놀다', furigana: 'あそぶ' },
+                { jp: '降りる', kr: '내리다', furigana: 'おりる' },
+                { jp: '寝る', kr: '자다', furigana: 'ねる' },
+                { jp: '言う', kr: '말하다', furigana: 'いう' },
+                { jp: '会う', kr: '만나다', furigana: 'あう' },
+                { jp: 'する', kr: '하다', furigana: null },
+                { jp: '勉強する', kr: '공부하다', furigana: 'べんきょうする' },
+                { jp: '運転する', kr: '운전하다', furigana: 'うんてんする' }
+            ],
+            'い형용사': [
+                { jp: '美味しい', kr: '맛있다', furigana: 'おいしい' },
+                { jp: '楽しい', kr: '즐겁다', furigana: 'たのしい' },
+                { jp: '新しい', kr: '새롭다', furigana: 'あたらしい' },
+                { jp: '古い', kr: '오래되다', furigana: 'ふるい' },
+                { jp: '高い', kr: '높다/비싸다', furigana: 'たかい' },
+                { jp: '安い', kr: '싸다', furigana: 'やすい' },
+                { jp: '痛い', kr: '아프다', furigana: 'いたい' },
+                { jp: '面白い', kr: '재밌다', furigana: 'おもしろい' },
+                { jp: '可愛い', kr: '귀엽다', furigana: 'かわいい' },
+                { jp: 'かっこいい', kr: '멋있다', furigana: null },
+                { jp: '寒い', kr: '춥다', furigana: 'さむい' },
+                { jp: '暑い', kr: '덥다', furigana: 'あつい' },
+                { jp: '忙しい', kr: '바쁘다', furigana: 'いそがしい' },
+                { jp: '暖かい', kr: '따뜻하다', furigana: 'あたたかい' }
+            ],
+            'な형용사': [
+                { jp: '好きだ', kr: '좋아하다', furigana: 'すきだ' },
+                { jp: '嫌いだ', kr: '싫어하다', furigana: 'きらいだ' },
+                { jp: '静かだ', kr: '조용하다', furigana: 'しずかだ' },
+                { jp: '便利だ', kr: '편리하다', furigana: 'べんりだ' },
+                { jp: '元気だ', kr: '건강하다', furigana: 'げんきだ' },
+                { jp: '綺麗だ', kr: '아름답다', furigana: 'きれいだ' },
+                { jp: '安全だ', kr: '안전하다', furigana: 'あんぜんだ' },
+                { jp: '有名だ', kr: '유명하다', furigana: 'ゆうめいだ' },
+                { jp: '大切だ', kr: '소중하다', furigana: 'たいせつだ' },
+                { jp: '簡単だ', kr: '간단하다', furigana: 'かんたんだ' }
+            ],
+            '부사': [
+                { jp: 'とても', kr: '매우', furigana: null },
+                { jp: 'ちょっと', kr: '조금', furigana: null },
+                { jp: 'もう', kr: '벌써/이제', furigana: null },
+                { jp: 'まだ', kr: '아직', furigana: null },
+                { jp: 'よく', kr: '자주/잘', furigana: null },
+                { jp: 'いつも', kr: '항상', furigana: null },
+                { jp: 'ときどき', kr: '때때로', furigana: null },
+                { jp: 'すぐ', kr: '곧', furigana: null },
+                { jp: '必ず', kr: '꼭, 반드시', furigana: 'かならず' },
+                { jp: 'とりあえず', kr: '일단', furigana: null }
+            ],
+            '숫자': [
+                { jp: '一', kr: '1', furigana: 'いち' },
+                { jp: '二', kr: '2', furigana: 'に' },
+                { jp: '三', kr: '3', furigana: 'さん' },
+                { jp: '四', kr: '4', furigana: 'よん/し' },
+                { jp: '五', kr: '5', furigana: 'ご' },
+                { jp: '六', kr: '6', furigana: 'ろく' },
+                { jp: '七', kr: '7', furigana: 'なな/しち' },
+                { jp: '八', kr: '8', furigana: 'はち' },
+                { jp: '九', kr: '9', furigana: 'きゅう/く' },
+                { jp: '十', kr: '10', furigana: 'じゅう' }
+            ],
+            '색깔': [
+                { jp: '赤', kr: '빨강', furigana: 'あか' },
+                { jp: '青', kr: '파랑', furigana: 'あお' },
+                { jp: '黒', kr: '검정', furigana: 'くろ' },
+                { jp: '白', kr: '하양', furigana: 'しろ' },
+                { jp: '緑', kr: '녹색', furigana: 'みどり' },
+                { jp: '紫', kr: '보라색', furigana: 'むらさき' },
+                { jp: '黄色', kr: '노란색', furigana: 'きいろ' },
+                { jp: '茶色', kr: '갈색', furigana: 'ちゃいろ' },
+                { jp: 'ピンク', kr: '분홍색', furigana: null },
+                { jp: '灰色', kr: '회색', furigana: 'はいいろ' }
+            ],
+            '과일': [
+                { jp: 'りんご', kr: '사과', furigana: null },
+                { jp: 'いちご', kr: '딸기', furigana: null },
+                { jp: 'すいか', kr: '수박', furigana: null },
+                { jp: 'ぶどう', kr: '포도', furigana: null },
+                { jp: 'もも', kr: '복숭아', furigana: null },
+                { jp: 'メロン', kr: '멜론', furigana: null },
+                { jp: 'バナナ', kr: '바나나', furigana: null },
+                { jp: 'みかん', kr: '귤', furigana: null },
+                { jp: 'なし', kr: '배', furigana: null },
+                { jp: 'かき', kr: '감', furigana: null }
+            ],
+            '음식': [
+                { jp: 'えだまめ', kr: '자루콩', furigana: null },
+                { jp: 'たこわさび', kr: '문어와사비', furigana: null },
+                { jp: 'からあげ', kr: '치킨', furigana: null },
+                { jp: 'やきとり', kr: '꼬치구이', furigana: null },
+                { jp: '串かつ', kr: '꼬치튀김', furigana: 'くしかつ' },
+                { jp: 'やきにく', kr: '야키니쿠', furigana: null },
+                { jp: 'おつまみ', kr: '안주', furigana: null },
+                { jp: '牛乳', kr: '우유', furigana: 'ぎゅうにゅう' },
+                { jp: 'ミルク', kr: '밀크', furigana: null }
+            ],
+            '시간': [
+                { jp: '一時', kr: '1시', furigana: 'いちじ' },
+                { jp: '二時', kr: '2시', furigana: 'にじ' },
+                { jp: '三時', kr: '3시', furigana: 'さんじ' },
+                { jp: '四時', kr: '4시', furigana: 'よじ' },
+                { jp: '五時', kr: '5시', furigana: 'ごじ' },
+                { jp: '六時', kr: '6시', furigana: 'ろくじ' },
+                { jp: '七時', kr: '7시', furigana: 'しちじ' },
+                { jp: '八時', kr: '8시', furigana: 'はちじ' },
+                { jp: '九時', kr: '9시', furigana: 'くじ' },
+                { jp: '十時', kr: '10시', furigana: 'じゅうじ' },
+                { jp: '十一時', kr: '11시', furigana: 'じゅういちじ' },
+                { jp: '十二時', kr: '12시', furigana: 'じゅうにじ' },
+                { jp: '今', kr: '지금', furigana: 'いま' },
+                { jp: '明日', kr: '내일', furigana: 'あした' },
+                { jp: '昨日', kr: '어제', furigana: 'きのう' },
+                { jp: 'おととい', kr: '그제', furigana: null },
+                { jp: '今日', kr: '오늘', furigana: 'きょう' }
+            ],
+            '월': [
+                { jp: '一月', kr: '1월', furigana: 'いちがつ' },
+                { jp: '二月', kr: '2월', furigana: 'にがつ' },
+                { jp: '三月', kr: '3월', furigana: 'さんがつ' },
+                { jp: '四月', kr: '4월', furigana: 'しがつ' },
+                { jp: '五月', kr: '5월', furigana: 'ごがつ' },
+                { jp: '六月', kr: '6월', furigana: 'ろくがつ' },
+                { jp: '七月', kr: '7월', furigana: 'しちがつ' },
+                { jp: '八月', kr: '8월', furigana: 'はちがつ' },
+                { jp: '九月', kr: '9월', furigana: 'くがつ' },
+                { jp: '十月', kr: '10월', furigana: 'じゅうがつ' },
+                { jp: '十一月', kr: '11월', furigana: 'じゅういちがつ' },
+                { jp: '十二月', kr: '12월', furigana: 'じゅうにがつ' }
+            ],
+            '요일': [
+                { jp: '月曜日', kr: '월요일', furigana: 'げつようび' },
+                { jp: '火曜日', kr: '화요일', furigana: 'かようび' },
+                { jp: '水曜日', kr: '수요일', furigana: 'すいようび' },
+                { jp: '木曜日', kr: '목요일', furigana: 'もくようび' },
+                { jp: '金曜日', kr: '금요일', furigana: 'きんようび' },
+                { jp: '土曜日', kr: '토요일', furigana: 'どようび' },
+                { jp: '日曜日', kr: '일요일', furigana: 'にちようび' }
+            ],
+            '의문사': [
+                { jp: 'なに', kr: '무엇', furigana: null },
+                { jp: 'だれ', kr: '누구', furigana: null },
+                { jp: 'どこ', kr: '어디', furigana: null },
+                { jp: 'なんで', kr: '왜', furigana: null },
+                { jp: 'いつ', kr: '언제', furigana: null },
+                { jp: 'どう', kr: '어떻게', furigana: null },
+                { jp: 'どのぐらい', kr: '얼마나', furigana: null },
+                { jp: 'どの', kr: '어떤', furigana: null },
+                { jp: 'どうして', kr: '왜', furigana: null }
+            ]
+        };
+
+        // 퀴즈 데이터
+        const quizData = {
+            'basic': [
+                { q: 'これは なに？', a: '이것은 무엇인가요?', h: 'これは なに？' },
+                { q: 'それは なんですか？', a: '그것은 무엇입니까?', h: 'それは なんですか？' },
+                { q: 'だれですか？', a: '누구입니까?', h: 'だれですか？' },
+                { q: 'どこですか？', a: '어디입니까?', h: 'どこですか？' },
+                { q: 'いつですか？', a: '언제입니까?', h: 'いつですか？' },
+                { q: 'どうですか？', a: '어떻습니까?', h: 'どうですか？' },
+                { q: 'どうしてですか？', a: '왜요?', h: 'どうしてですか？' },
+                { q: '好きな 色は なに？', a: '좋아하는 색은 무엇인가요?', h: 'すきな いろは なに？' },
+                { q: '好きな くだものは なに？', a: '좋아하는 과일은 무엇인가요?', h: 'すきな くだものは なに？' },
+                { q: '韓国の たべものは 何が好き？', a: '한국 음식은 무엇이 좋아해요?', h: 'かんこくの たべものは なにが すき？' },
+                { q: '本当ですか？', a: '진짜예요?', h: 'ほんとうですか？' },
+                { q: '大丈夫ですか？', a: '괜찮아요?', h: 'だいじょうぶですか？' },
+                { q: '誰が 言ったの？', a: '누가 말했어요?', h: 'だれが いったの？' },
+                { q: 'いくらですか？', a: '얼마예요?', h: 'いくらですか？' },
+                { q: '何を したい？', a: '무엇을 하고 싶어요?', h: 'なにを したい？' },
+                { q: '何が ほしい？', a: '무엇을 갖고 싶어요?', h: 'なにが ほしい？' }
+            ],
+            'time': [
+                { q: '何時から？', a: '몇 시부터예요?', h: 'なんじから？' },
+                { q: '何時まで？', a: '몇 시까지예요?', h: 'なんじまで？' },
+                { q: '何時から 何時まで？', a: '몇 시부터 몇 시까지예요?', h: 'なんじから なんじまで？' },
+                { q: '明日 仕事は 何時から？', a: '내일 일은 몇 시부터예요?', h: 'あした しごとは なんじから？' },
+                { q: 'いつ 来るの？', a: '언제 와요?', h: 'いつ くるの？' },
+                { q: 'いつまで いるの？', a: '언제까지 있어요?', h: 'いつまで いるの？' },
+                { q: 'いつでも いいよ', a: '언제든지 괜찮아요', h: 'いつでも いいよ' },
+                { q: '何月に 行くの？', a: '몇 월에 가요?', h: 'なんがつに いくの？' },
+                { q: '何曜日が いい？', a: '무슨 요일이 좋아요?', h: 'なんようびが いい？' },
+                { q: '今日は 何曜日？', a: '오늘은 무슨 요일이에요?', h: 'きょうは なんようび？' }
+            ],
+            'location': [
+                { q: 'どこから どこまで どのぐらい かかるの？', a: '어디서 어디까지 얼마나 걸려요?', h: 'どこから どこまで どのぐらい かかるの？' },
+                { q: '家から 会社まで どのぐらい？', a: '집에서 회사까지 얼마나 걸려요?', h: 'いえから かいしゃまで どのぐらい？' },
+                { q: 'バスで 行くの？', a: '버스로 가요?', h: 'バスで いくの？' },
+                { q: '電車で 何分かかる？', a: '전철로 몇 분 걸려요?', h: 'でんしゃで なんぷんかかる？' },
+                { q: '歩いて 行ける？', a: '걸어서 갈 수 있어요?', h: 'あるいて いける？' },
+                { q: '会社は 家から 遠いの？', a: '회사는 집에서 멀어요?', h: 'かいしゃは いえから とおいの？' },
+                { q: '一番 近い コンビニは どこ？', a: '가장 가까운 편의점은 어디예요?', h: 'いちばん ちかい コンビニは どこ？' },
+                { q: '飛行機で 何時間？', a: '비행기로 몇 시간이에요?', h: 'ひこうきで なんじかん？' },
+                { q: '地下鉄で カンナム駅まで 行ける？', a: '지하철로 강남역까지 갈 수 있어요?', h: 'ちかてつで カンナムえきまで いける？' },
+                { q: 'どこで 降りるの？', a: '어디서 내려요?', h: 'どこで おりるの？' }
+            ],
+            'daily': [
+                { q: '料理 できるの？', a: '요리 할 수 있어요?', h: 'りょうり できるの？' },
+                { q: 'いつでも 結婚できるね？', a: '언제든지 결혼할 수 있겠네요?', h: 'いつでも けっこんできるね？' },
+                { q: '彼氏 いないんだ？', a: '남친 없어요?', h: 'かれし いないんだ？' },
+                { q: 'お金 もってる？', a: '돈 가지고 있어요?', h: 'おかね もってる？' },
+                { q: '今から 飲みに 行く？', a: '지금부터 마시러 가요?', h: 'いまから のみに いく？' },
+                { q: '二次会 どう？', a: '2차 어때요?', h: 'にじかい どう？' },
+                { q: 'おかんじょう おねがいします', a: '계산 부탁합니다', h: 'おかんじょう おねがいします' },
+                { q: 'メニュー ください', a: '메뉴 주세요', h: 'メニュー ください' },
+                { q: '何を 飲みますか？', a: '무엇을 마시겠습니까?', h: 'なにを のみますか？' },
+                { q: '何を 食べますか？', a: '무엇을 먹겠습니까?', h: 'なにを たべますか？' }
+            ]
+        };
+
+        // 전역 변수
+        let knownWords = JSON.parse(localStorage.getItem('knownWords') || '[]');
+        let wordStates = {};
+        let currentMode = 'study';
+        let currentCategory = 'all';
+        let currentLevel = 'lesson';
+        let bookmarkPosition = parseInt(localStorage.getItem('bookmarkPosition') || '0');
+        let currentQuizCategory = 'basic';
+        let currentQuestionIndex = 0;
+
+        // 메뉴 토글
+        function toggleMenu() {
+            const dropdown = document.getElementById('menuDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // 탭 전환
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('menuDropdown').classList.remove('show');
+        }
+
+        // 모드 전환
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (mode === 'study') {
+                document.getElementById('study-mode').classList.remove('hidden');
+                document.getElementById('known-mode').classList.add('hidden');
+                renderStudyWords();
+            } else {
+                document.getElementById('study-mode').classList.add('hidden');
+                document.getElementById('known-mode').classList.remove('hidden');
+                renderKnownWords();
+            }
+        }
+
+        // 레벨 필터
+        function filterLevel() {
+            currentLevel = document.getElementById('levelFilter').value;
+            currentCategory = 'all';
+            document.getElementById('categoryFilter').value = 'all';
+            updateCategoryOptions();
+            renderStudyWords();
+            updateStats();
+        }
+
+        // 카테고리 옵션 업데이트
+        function updateCategoryOptions() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            categoryFilter.innerHTML = '<option value="all">전체 보기</option>';
+            
+            const dataSource = currentLevel === 'lesson' ? lessonVocabulary : n5n3Vocabulary;
+            Object.keys(dataSource).forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // 카테고리 필터
+        function filterCategory() {
+            currentCategory = document.getElementById('categoryFilter').value;
+            renderStudyWords();
+            updateStats();
+        }
+
+        // 북마크 이동
+        function goToBookmark() {
+            const bookmark = document.querySelector(`[data-word-index="${bookmarkPosition}"]`);
+            if (bookmark) {
+                bookmark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                bookmark.classList.add('bookmarked');
+                setTimeout(() => bookmark.classList.remove('bookmarked'), 2000);
+            }
+        }
+
+        // 북마크 설정
+        function setBookmark(index) {
+            bookmarkPosition = index;
+            localStorage.setItem('bookmarkPosition', index.toString());
+        }
+
+        // HTML 다운로드
+        function downloadHTML() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'japanese_study_ultimate.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 모든 단어 가져오기
+        function getAllWords() {
+            const dataSource = currentLevel === 'lesson' ? lessonVocabulary : n5n3Vocabulary;
+            let words = [];
+            let globalIndex = 0;
+            
+            if (currentCategory === 'all') {
+                Object.keys(dataSource).forEach(cat => {
+                    dataSource[cat].forEach(word => {
+                        words.push({ ...word, category: cat, globalIndex: globalIndex++ });
+                    });
+                });
+            } else {
+                dataSource[currentCategory]?.forEach(word => {
+                    words.push({ ...word, category: currentCategory, globalIndex: globalIndex++ });
+                });
+            }
+            return words;
+        }
+
+        // 학습 단어 가져오기
+        function getStudyWords() {
+            const allWords = getAllWords();
+            return allWords.filter(word => 
+                !knownWords.find(kw => kw.jp === word.jp && kw.kr === word.kr)
+            );
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const studyWords = getStudyWords();
+            const allWords = getAllWords();
+            const learnedCount = allWords.length - studyWords.length;
+            const percentage = allWords.length > 0 ? Math.round((learnedCount / allWords.length) * 100) : 0;
+            
+            document.getElementById('totalWords').textContent = allWords.length;
+            document.getElementById('learnedPercentage').textContent = `${percentage}%`;
+        }
+
+        // 스크롤 진행률 업데이트
+        function updateScrollProgress() {
+            const container = document.getElementById('vocab-list');
+            const scrollTop = container.scrollTop;
+            const scrollHeight = container.scrollHeight - container.clientHeight;
+            const scrollPercentage = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+            
+            const visibleCards = container.querySelectorAll('.interactive-word-card');
+            let currentVisible = 0;
+            
+            for (let i = 0; i < visibleCards.length; i++) {
+                const rect = visibleCards[i].getBoundingClientRect();
+                if (rect.top < window.innerHeight / 2) {
+                    currentVisible = i + 1;
+                }
+            }
+            
+            document.getElementById('currentPosition').textContent = currentVisible;
+            document.getElementById('scrollProgressBar').style.width = `${scrollPercentage}%`;
+            document.getElementById('scrollIndicator').textContent = `${currentVisible} / ${visibleCards.length}`;
+            
+            // 스크롤 중일 때만 표시
+            if (scrollPercentage > 0) {
+                document.getElementById('scrollProgress').classList.add('visible');
+                document.getElementById('scrollIndicator').classList.add('visible');
+            }
+            
+            // 스크롤 멈추면 숨기기
+            clearTimeout(window.scrollTimeout);
+            window.scrollTimeout = setTimeout(() => {
+                document.getElementById('scrollProgress').classList.remove('visible');
+                document.getElementById('scrollIndicator').classList.remove('visible');
+            }, 2000);
+        }
+
+        // 카운트 업데이트
+        function updateCounts() {
+            document.getElementById('study-count').textContent = getStudyWords().length;
+            document.getElementById('known-count').textContent = knownWords.length;
+            updateStats();
+        }
+
+        // 후리가나 토글
+        function toggleFurigana(wordId) {
+            wordStates[wordId] = wordStates[wordId] || {};
+            wordStates[wordId].showFurigana = !wordStates[wordId].showFurigana;
+            renderStudyWords();
+        }
+
+        // 의미 토글
+        function toggleMeaning(wordId) {
+            wordStates[wordId] = wordStates[wordId] || {};
+            wordStates[wordId].showMeaning = !wordStates[wordId].showMeaning;
+            renderStudyWords();
+        }
+
+        // 아는 단어로 마크
+        function markAsKnown(word) {
+            knownWords.push(word);
+            localStorage.setItem('knownWords', JSON.stringify(knownWords));
+            renderStudyWords();
+            updateCounts();
+        }
+
+        // 모르는 단어로 마크
+        function markAsDontKnow(wordId) {
+            wordStates[wordId] = wordStates[wordId] || {};
+            wordStates[wordId].checked = true;
+            renderStudyWords();
+        }
+
+        // 단어 복원
+        function restoreWord(word) {
+            knownWords = knownWords.filter(kw => 
+                !(kw.jp === word.jp && kw.kr === word.kr)
+            );
+            localStorage.setItem('knownWords', JSON.stringify(knownWords));
+            renderKnownWords();
+            updateCounts();
+        }
+
+        // 모든 단어 복원
+        function restoreAll() {
+            if (confirm('모든 아는 단어를 되돌리시겠습니까?')) {
+                knownWords = [];
+                wordStates = {};
+                localStorage.setItem('knownWords', JSON.stringify(knownWords));
+                renderKnownWords();
+                renderStudyWords();
+                updateCounts();
+            }
+        }
+
+        // 학습 단어 렌더링
+        function renderStudyWords() {
+            const container = document.getElementById('vocab-list');
+            const words = getStudyWords();
+            
+            if (words.length === 0) {
+                container.innerHTML = '<div class="empty-message">모든 단어를 학습했습니다! 🎉</div>';
+                return;
+            }
+
+            container.innerHTML = words.map((word, idx) => {
+                const wordId = `${word.jp}_${idx}`;
+                const state = wordStates[wordId] || {};
+                const hasKanji = /[一-龯]/.test(word.jp);
+                
+                let japaneseHtml = word.jp;
+                if (state.showFurigana && word.furigana && hasKanji) {
+                    japaneseHtml = `<ruby>${word.jp}<rt>${word.furigana}</rt></ruby>`;
+                }
+
+                return `
+                    <div class="interactive-word-card" data-word-index="${word.globalIndex}" onclick="setBookmark(${word.globalIndex})">
+                        <div class="word-column">
+                            <div class="japanese-word">${japaneseHtml}</div>
+                            ${state.showMeaning ? `<div class="word-meaning">${word.kr}</div>` : ''}
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-btn-small ${state.showFurigana ? 'active' : ''}" 
+                                onclick="event.stopPropagation(); toggleFurigana('${wordId}')"
+                                ${!hasKanji || !word.furigana ? 'disabled' : ''}>あ</button>
+                            <button class="action-btn-small ${state.showMeaning ? 'active' : ''}" 
+                                onclick="event.stopPropagation(); toggleMeaning('${wordId}')">뜻</button>
+                            <button class="action-btn-small btn-know" 
+                                onclick='event.stopPropagation(); markAsKnown(${JSON.stringify(word).replace(/'/g, "\\'")})'>안다</button>
+                            <button class="action-btn-small btn-dont-know ${state.checked ? 'checked' : ''}" 
+                                onclick="event.stopPropagation(); markAsDontKnow('${wordId}')">모른다</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            updateScrollProgress();
+        }
+
+        // 아는 단어 렌더링
+        function renderKnownWords() {
+            const container = document.getElementById('known-list');
+            
+            if (knownWords.length === 0) {
+                container.innerHTML = '<div class="empty-message">아직 학습한 단어가 없습니다.</div>';
+                return;
+            }
+
+            container.innerHTML = knownWords.map(word => `
+                <div class="known-word-card" onclick='restoreWord(${JSON.stringify(word).replace(/'/g, "\\'")})'>
+                    <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">${word.jp}</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">${word.kr}</div>
+                    <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 5px;">탭하여 복원</div>
+                </div>
+            `).join('');
+        }
+
+        // 퀴즈 카테고리 전환
+        function switchQuizCategory(category) {
+            currentQuizCategory = category;
+            currentQuestionIndex = 0;
+            document.querySelectorAll('.quiz-cat-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            loadQuestion();
+        }
+
+        // 질문 로드
+        function loadQuestion() {
+            const questions = quizData[currentQuizCategory];
+            const question = questions[currentQuestionIndex];
+            
+            document.getElementById('quiz-question').textContent = question.q;
+            document.getElementById('quiz-furigana').textContent = question.h || '';
+            document.getElementById('quiz-answer').textContent = question.a;
+            document.getElementById('quiz-answer').classList.add('hidden');
+            document.getElementById('quiz-progress').textContent = 
+                `${currentQuestionIndex + 1} / ${questions.length}`;
+        }
+
+        // 답 토글
+        function toggleAnswer() {
+            document.getElementById('quiz-answer').classList.toggle('hidden');
+        }
+
+        // 다음 질문
+        function nextQuestion() {
+            const questions = quizData[currentQuizCategory];
+            currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+            loadQuestion();
+        }
+
+        // 이전 질문
+        function previousQuestion() {
+            const questions = quizData[currentQuizCategory];
+            currentQuestionIndex = currentQuestionIndex === 0 ? 
+                questions.length - 1 : currentQuestionIndex - 1;
+            loadQuestion();
+        }
+
+        // 초기화
+        updateCategoryOptions();
+        updateCounts();
+        renderStudyWords();
+        loadQuestion();
+    </script>
+</body>
+</html>
