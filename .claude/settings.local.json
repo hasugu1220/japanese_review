@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Read(c:\\Users\\하승호\\Downloads/**)",
+      "Bash(npm start)",
+      "Bash(npm run build:*)",
+      "Bash(python:*)",
+      "Bash(where python)",
+      "Bash(py --version)",
+      "Bash(py -m pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(dir:*)",
+      "Bash(cmd /c:*)",
+      "Bash(powershell:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

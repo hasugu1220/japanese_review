@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/japanese_review/static/css/main.a816ada7.css",
+    "main.js": "/japanese_review/static/js/main.11728f90.js",
+    "index.html": "/japanese_review/index.html",
+    "main.a816ada7.css.map": "/japanese_review/static/css/main.a816ada7.css.map",
+    "main.11728f90.js.map": "/japanese_review/static/js/main.11728f90.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a816ada7.css",
+    "static/js/main.11728f90.js"
+  ]
+}
