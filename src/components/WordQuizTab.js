@@ -71,7 +71,16 @@ function WordQuizTab() {
 
     // Shuffle and select questions
     const shuffled = [...allWords].sort(() => Math.random() - 0.5);
-    const questionWords = shuffled.slice(0, Math.min(totalQuestions, shuffled.length));
+    
+    // For specific quiz sets, use all words from the set (max 50)
+    // For random/wrong/all, use the original totalQuestions limit (50)
+    let questionCount = totalQuestions;
+    if (quizLevel !== 'random' && quizLevel !== 'wrong' && quizSet > 0) {
+      // For specific sets, use all available words from that set
+      questionCount = Math.min(50, shuffled.length);
+    }
+    
+    const questionWords = shuffled.slice(0, Math.min(questionCount, shuffled.length));
     
     const quizQuestions = questionWords.map(word => {
       // Get wrong options
@@ -201,28 +210,35 @@ function WordQuizTab() {
       </div>
       
       {(quizLevel === 'n3' || quizLevel === 'n4' || quizLevel === 'n5') && (
-        <div className="quiz-set-selector" style={{display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '10px'}}>
-          <button 
-            className={`set-btn ${quizSet === 0 ? 'active' : ''}`}
-            onClick={() => setQuizSet(0)}
-            style={{padding: '5px 10px', fontSize: '12px', border: '1px solid #ddd', borderRadius: '4px', background: quizSet === 0 ? '#7c3aed' : 'white', color: quizSet === 0 ? 'white' : '#333'}}
+        <div className="quiz-set-selector" style={{marginBottom: '15px'}}>
+          <div style={{marginBottom: '8px', fontSize: '14px', fontWeight: 'bold', color: '#333'}}>
+            퀴즈 세트 선택:
+          </div>
+          <select 
+            className="compact-dropdown"
+            value={quizSet} 
+            onChange={(e) => setQuizSet(parseInt(e.target.value))}
+            style={{
+              padding: '8px 12px',
+              fontSize: '14px',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              background: 'white',
+              minWidth: '200px',
+              cursor: 'pointer'
+            }}
           >
-            전체
-          </button>
-          {Array.from({length: Math.ceil(getAllWords(quizLevel).length / 50)}, (_, i) => i + 1).map((setNum) => {
-            const startNum = (setNum - 1) * 50 + 1;
-            const endNum = setNum * 50;
-            return (
-              <button 
-                key={setNum}
-                className={`set-btn ${quizSet === setNum ? 'active' : ''}`}
-                onClick={() => setQuizSet(setNum)}
-                style={{padding: '5px 10px', fontSize: '12px', border: '1px solid #ddd', borderRadius: '4px', background: quizSet === setNum ? '#7c3aed' : 'white', color: quizSet === setNum ? 'white' : '#333'}}
-              >
-                세트{setNum} ({startNum}-{endNum})
-              </button>
-            );
-          })}
+            <option value={0}>전체 랜덤 (모든 단어)</option>
+            {Array.from({length: Math.ceil(getAllWords(quizLevel).length / 50)}, (_, i) => i + 1).map((setNum) => {
+              const startNum = (setNum - 1) * 50 + 1;
+              const endNum = Math.min(setNum * 50, getAllWords(quizLevel).length);
+              return (
+                <option key={setNum} value={setNum}>
+                  세트 {setNum} ({startNum}~{endNum}번 단어)
+                </option>
+              );
+            })}
+          </select>
         </div>
       )}
       

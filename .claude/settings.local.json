@@ -14,7 +14,14 @@
       "Bash(dir:*)",
       "Bash(cmd /c:*)",
       "Bash(powershell:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(npm run deploy:*)",
+      "Bash(git fetch:*)",
+      "Bash(rm:*)",
+      "Read(C:\\/**)",
+      "Bash(sed:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

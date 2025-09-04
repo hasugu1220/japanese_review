@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { vocabularyData, getVocabularyCount, getAllWords, getCategories } from '../data/vocabularyData';
+import { vocabularyData, getCategories } from '../data/vocabularyData';
 import '../styles/VocabularyTab.css';
 
 function VocabularyTab() {
@@ -9,7 +9,6 @@ function VocabularyTab() {
   const [mode, setMode] = useState('study'); // study or known
   const [level, setLevel] = useState('lesson'); // lesson, n5, n4, n3
   const [category, setCategory] = useState('all'); // all or specific category
-  const [knownLevel, setKnownLevel] = useState('all'); // for filtering known words
   const [knownWords, setKnownWords] = useState(() => {
     const saved = localStorage.getItem('knownWords');
     return saved ? JSON.parse(saved) : [];
@@ -19,19 +18,13 @@ function VocabularyTab() {
   const [filteredWords, setFilteredWords] = useState([]);
   const [showAllFurigana, setShowAllFurigana] = useState(false);
   const [showAllMeaning, setShowAllMeaning] = useState(false);
-  const [currentPosition, setCurrentPosition] = useState(0);
-  const [showAllWords, setShowAllWords] = useState(false);
+  const [showAllWords] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const wordsPerPage = 50;
 
-  // Get vocabulary based on level
-  const getVocabularyByLevel = () => {
-    return vocabularyData[level] || vocabularyData.lesson;
-  };
-
   // Initialize words
   useEffect(() => {
-    const vocabulary = getVocabularyByLevel();
+    const vocabulary = vocabularyData[level] || vocabularyData.lesson;
     const words = [];
     let index = 0;
     
@@ -50,13 +43,11 @@ function VocabularyTab() {
     });
     
     setAllWords(words);
-    setCurrentPosition(0);
-    // Reset display states when changing level
     setShowAllFurigana(false);
     setShowAllMeaning(false);
     setWordStates({});
-    setCategory('all'); // Reset category to all when changing level
-  }, [level]); // eslint-disable-line react-hooks/exhaustive-deps
+    setCategory('all');
+  }, [level]);
 
   // Filter words based on category and known status
   useEffect(() => {
@@ -74,54 +65,30 @@ function VocabularyTab() {
         filtered = filtered.filter(word => !knownWords.includes(word.id));
       }
     } else {
-      // In known mode, show only known words from selected level
-      if (knownLevel === 'all') {
-        // Show all known words across all levels
-        const allKnownWords = [];
-        Object.keys(vocabularyData).forEach(lvl => {
-          const levelVocab = vocabularyData[lvl];
-          Object.entries(levelVocab).forEach(([cat, items]) => {
-            items.forEach((item, idx) => {
-              const wordId = `${lvl}-${cat}-${item.jp}`;
-              if (knownWords.includes(wordId)) {
-                allKnownWords.push({
-                  ...item,
-                  category: cat,
-                  level: lvl,
-                  id: wordId,
-                  levelIndex: idx
-                });
-              }
-            });
+      // In known mode, show all known words across all levels
+      const allKnownWords = [];
+      Object.keys(vocabularyData).forEach(lvl => {
+        const levelVocab = vocabularyData[lvl];
+        Object.entries(levelVocab).forEach(([cat, items]) => {
+          items.forEach((item, idx) => {
+            const wordId = `${lvl}-${cat}-${item.jp}`;
+            if (knownWords.includes(wordId)) {
+              allKnownWords.push({
+                ...item,
+                category: cat,
+                level: lvl,
+                id: wordId,
+                levelIndex: idx
+              });
+            }
           });
         });
-        filtered = allKnownWords;
-      } else {
-        // Show known words from specific level
-        const levelKnownWords = [];
-        const levelVocab = vocabularyData[knownLevel];
-        if (levelVocab) {
-          Object.entries(levelVocab).forEach(([cat, items]) => {
-            items.forEach((item, idx) => {
-              const wordId = `${knownLevel}-${cat}-${item.jp}`;
-              if (knownWords.includes(wordId)) {
-                levelKnownWords.push({
-                  ...item,
-                  category: cat,
-                  level: knownLevel,
-                  id: wordId,
-                  levelIndex: idx
-                });
-              }
-            });
-          });
-        }
-        filtered = levelKnownWords;
-      }
+      });
+      filtered = allKnownWords;
     }
     
     setFilteredWords(filtered);
-  }, [allWords, category, mode, knownWords, knownLevel, showAllWords]);
+  }, [allWords, category, mode, knownWords, showAllWords]);
 
   // Pagination logic
   const paginatedWords = filteredWords.slice(
@@ -160,6 +127,11 @@ function VocabularyTab() {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(0);
+    // Clear word states when switching categories/levels/modes
+    setWordStates({});
+    setShowAllFurigana(false);
+    setShowAllMeaning(false);
+    
   }, [category, level, mode]);
 
   // Touch handlers for swipe navigation
@@ -213,10 +185,6 @@ function VocabularyTab() {
     }
   };
 
-  // Toggle show all words (including completed)
-  const toggleShowAllWords = () => {
-    setShowAllWords(prev => !prev);
-  };
   
   // Toggle all furigana and meanings
   const toggleAllDisplay = () => {
@@ -246,6 +214,16 @@ function VocabularyTab() {
     const newKnownWords = knownWords.filter(id => id !== wordId);
     setKnownWords(newKnownWords);
     localStorage.setItem('knownWords', JSON.stringify(newKnownWords));
+    
+    // If this was the last word on the current page, go to the previous page
+    const currentPageWords = filteredWords.slice(
+      currentPage * wordsPerPage,
+      (currentPage + 1) * wordsPerPage
+    );
+    
+    if (currentPageWords.length === 1 && currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
 
@@ -276,55 +254,24 @@ function VocabularyTab() {
   };
 
 
-  // Reset single word
-  const resetWord = (wordId) => {
-    setWordStates(prev => ({
-      ...prev,
-      [wordId]: {
-        showFurigana: false,
-        showMeaning: false
-      }
-    }));
-  };
 
   // Restore all words
   const restoreAll = () => {
-    const levelText = knownLevel === 'all' ? '모든' : knownLevel.toUpperCase();
-    if (window.confirm(`${levelText} 카테고리의 완료한 단어를 모두 되돌리시겠습니까?`)) {
-      if (knownLevel === 'all') {
-        setKnownWords([]);
-        localStorage.setItem('knownWords', JSON.stringify([]));
-      } else {
-        // Remove only words from the selected level
-        const levelPrefix = `${knownLevel}-`;
-        const newKnownWords = knownWords.filter(id => !id.startsWith(levelPrefix));
-        setKnownWords(newKnownWords);
-        localStorage.setItem('knownWords', JSON.stringify(newKnownWords));
-      }
+    if (window.confirm('모든 완료한 단어를 되돌리시겠습니까?')) {
+      setKnownWords([]);
+      localStorage.setItem('knownWords', JSON.stringify([]));
+      // Reset current page and scroll to top
+      setCurrentPage(0);
+      setTimeout(() => {
+        const knownList = document.getElementById('known-list');
+        if (knownList) {
+          knownList.scrollTop = 0;
+        }
+        window.scrollTo(0, 0);
+      }, 0);
     }
   };
 
-  // Update scroll progress
-  const updateScrollProgress = (e) => {
-    const scrollProgress = document.getElementById('scrollProgress');
-    const scrollProgressBar = document.getElementById('scrollProgressBar');
-    const scrollIndicator = document.getElementById('scrollIndicator');
-    
-    if (scrollProgress && scrollProgressBar && scrollIndicator) {
-      const scrollTop = e.target.scrollTop;
-      const scrollHeight = e.target.scrollHeight - e.target.clientHeight;
-      const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-      
-      scrollProgressBar.style.width = `${scrollPercent}%`;
-      scrollProgress.classList.toggle('visible', scrollTop > 50);
-      scrollIndicator.classList.toggle('visible', scrollTop > 50);
-      
-      // Update indicator
-      const visibleIndex = Math.floor((scrollTop / scrollHeight) * filteredWords.length);
-      setCurrentPosition(Math.min(visibleIndex + 1, filteredWords.length));
-      scrollIndicator.textContent = `${Math.min(visibleIndex + 1, filteredWords.length)} / ${filteredWords.length}`;
-    }
-  };
 
   return (
     <div className="vocabulary-tab">
@@ -333,6 +280,9 @@ function VocabularyTab() {
         <button 
           className={`mode-btn ${mode === 'study' ? 'active' : ''}`}
           onClick={() => {
+            // Immediately clear filtered words to prevent flash
+            setFilteredWords([]);
+            setCurrentPage(0);
             setMode('study');
             setTimeout(() => {
               const vocabList = document.getElementById('vocab-list');
@@ -348,6 +298,9 @@ function VocabularyTab() {
         <button 
           className={`mode-btn ${mode === 'known' ? 'active' : ''}`}
           onClick={() => {
+            // Immediately clear filtered words to prevent flash
+            setFilteredWords([]);
+            setCurrentPage(0);
             setMode('known');
             setTimeout(() => {
               const knownList = document.getElementById('known-list');
@@ -370,8 +323,14 @@ function VocabularyTab() {
               className="compact-dropdown" 
               value={level} 
               onChange={(e) => {
-                setLevel(e.target.value);
+                const newLevel = e.target.value;
+                // Immediately clear filtered words to prevent flash
+                setFilteredWords([]);
+                setLevel(newLevel);
                 setCurrentPage(0);
+                setWordStates({});
+                setShowAllFurigana(false);
+                setShowAllMeaning(false);
                 // Scroll to top when changing level
                 setTimeout(() => {
                   const vocabList = document.getElementById('vocab-list');
@@ -391,8 +350,13 @@ function VocabularyTab() {
               className="compact-dropdown" 
               value={category} 
               onChange={(e) => {
+                // Immediately clear filtered words to prevent flash
+                setFilteredWords([]);
                 setCategory(e.target.value);
-                setCurrentPage(0);  // Reset to first page when category changes
+                setCurrentPage(0);
+                setWordStates({});
+                setShowAllFurigana(false);
+                setShowAllMeaning(false);
                 // Scroll to top when changing category
                 setTimeout(() => {
                   const vocabList = document.getElementById('vocab-list');
@@ -435,7 +399,7 @@ function VocabularyTab() {
           </div>
 
           {totalPages > 1 && (
-            <div className="pagination-controls" style={{display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '10px'}}>
+            <div className="pagination-controls" style={{display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '4px'}}>
               <button 
                 className="compact-action-btn" 
                 onClick={goToPrevPage}
@@ -462,7 +426,6 @@ function VocabularyTab() {
           <div 
             className="interactive-vocab-list" 
             id="vocab-list"
-            onScroll={updateScrollProgress}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
@@ -470,8 +433,7 @@ function VocabularyTab() {
             {filteredWords.length === 0 ? (
               <div className="empty-message">모든 단어를 학습했습니다! 🎉</div>
             ) : (
-              paginatedWords.sort((a, b) => a.levelIndex - b.levelIndex).map((word, index) => {
-                // Use the word's original levelIndex as its permanent number
+              paginatedWords.sort((a, b) => a.levelIndex - b.levelIndex).map((word) => {
                 const displayIndex = word.levelIndex + 1;
                 return (
                 <div key={word.id} className="interactive-word-card">
@@ -527,26 +489,8 @@ function VocabularyTab() {
       ) : (
         <div id="known-mode">
           <div className="compact-controls">
-            <select 
-              className="compact-dropdown" 
-              value={knownLevel} 
-              onChange={(e) => {
-                setKnownLevel(e.target.value);
-                // Scroll to top when changing known level
-                const knownList = document.getElementById('known-list');
-                if (knownList) {
-                  knownList.scrollTop = 0;
-                }
-              }}
-            >
-              <option value="all">전체</option>
-              <option value="lesson">수업 단어</option>
-              <option value="n5">JLPT N5</option>
-              <option value="n4">JLPT N4</option>
-              <option value="n3">JLPT N3</option>
-            </select>
             <button className="compact-action-btn" onClick={restoreAll}>
-              {knownLevel === 'all' ? '모든' : knownLevel.toUpperCase()} 단어 되돌리기
+              모든 단어 되돌리기
             </button>
           </div>
           <div className="known-words-grid" id="known-list">
