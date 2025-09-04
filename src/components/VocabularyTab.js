@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { vocabularyData, getCategories } from '../data/vocabularyData';
+import { vocabularyData } from '../data/vocabularyData';
 import '../styles/VocabularyTab.css';
 
 function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
