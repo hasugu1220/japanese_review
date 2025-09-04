@@ -387,40 +387,27 @@ function VocabularyTab() {
           </div>
 
           <div className="mini-stats">
+            <button 
+              className="mini-nav-btn" 
+              onClick={goToPrevPage}
+              disabled={currentPage === 0 || totalPages <= 1}
+              style={{opacity: currentPage === 0 || totalPages <= 1 ? 0.3 : 1}}
+            >
+              ←
+            </button>
             <span className="mini-stat">
-              전체 <strong id="totalWords">{filteredWords.length}</strong>
+              페이지 <strong>{currentPage + 1}</strong> / <strong>{totalPages || 1}</strong>
             </span>
-            <span className="mini-stat">
-              Day <strong>{currentPage + 1}</strong> / {totalPages || 1}
-            </span>
-            <span className="mini-stat">
-              완료 <strong id="learnedPercentage">{allWords.length > 0 ? Math.round((knownWords.length / allWords.length) * 100) : 0}%</strong>
-            </span>
+            <button 
+              className="mini-nav-btn" 
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages - 1 || totalPages <= 1}
+              style={{opacity: currentPage === totalPages - 1 || totalPages <= 1 ? 0.3 : 1}}
+            >
+              →
+            </button>
           </div>
 
-          {totalPages > 1 && (
-            <div className="pagination-controls" style={{display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '4px'}}>
-              <button 
-                className="compact-action-btn" 
-                onClick={goToPrevPage}
-                disabled={currentPage === 0}
-                style={{opacity: currentPage === 0 ? 0.5 : 1}}
-              >
-                ← 이전
-              </button>
-              <span style={{display: 'flex', alignItems: 'center', fontSize: '14px', fontWeight: 'bold'}}>
-                Day {currentPage + 1}
-              </span>
-              <button 
-                className="compact-action-btn" 
-                onClick={goToNextPage}
-                disabled={currentPage === totalPages - 1}
-                style={{opacity: currentPage === totalPages - 1 ? 0.5 : 1}}
-              >
-                다음 →
-              </button>
-            </div>
-          )}
 
           {/* Word List */}
           <div 

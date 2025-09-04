@@ -21,7 +21,8 @@
       "Bash(rm:*)",
       "Read(C:\\/**)",
       "Bash(sed:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

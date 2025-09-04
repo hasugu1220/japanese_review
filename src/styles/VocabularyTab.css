@@ -7,7 +7,7 @@
 .mode-selector {
   display: flex;
   gap: 4px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   background: #f5f5f5;
   padding: 3px;
   border-radius: 10px;
@@ -36,7 +36,7 @@
 .compact-controls {
   display: flex;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .compact-dropdown {
@@ -52,7 +52,7 @@
 .action-controls {
   display: flex;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .compact-action-btn {
@@ -75,12 +75,14 @@
 /* Mini Stats */
 .mini-stats {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
   padding: 6px 8px;
   background: rgba(124, 58, 237, 0.1);
   border-radius: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-size: 13px;
+  gap: 12px;
 }
 
 .mini-stat {
@@ -92,6 +94,27 @@
   color: #7c3aed;
   font-weight: 700;
   margin-left: 2px;
+}
+
+.mini-nav-btn {
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 4px;
+  color: #7c3aed;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 8px;
+  transition: all 0.2s;
+}
+
+.mini-nav-btn:hover:not(:disabled) {
+  background: rgba(124, 58, 237, 0.3);
+  transform: translateY(-1px);
+}
+
+.mini-nav-btn:disabled {
+  cursor: not-allowed;
 }
 
 /* Vocabulary List */
