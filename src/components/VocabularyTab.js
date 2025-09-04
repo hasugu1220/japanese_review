@@ -391,9 +391,8 @@ function VocabularyTab() {
               className="nav-btn" 
               onClick={goToPrevPage}
               disabled={currentPage === 0 || totalPages <= 1}
-              style={{opacity: currentPage === 0 || totalPages <= 1 ? 0.3 : 1}}
             >
-              ←
+              ← 이전
             </button>
             <span className="page-display">
               {currentPage + 1} / {totalPages || 1}
@@ -402,9 +401,8 @@ function VocabularyTab() {
               className="nav-btn" 
               onClick={goToNextPage}
               disabled={currentPage === totalPages - 1 || totalPages <= 1}
-              style={{opacity: currentPage === totalPages - 1 || totalPages <= 1 ? 0.3 : 1}}
             >
-              →
+              다음 →
             </button>
           </div>
 

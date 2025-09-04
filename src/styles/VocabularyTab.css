@@ -100,30 +100,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   margin-bottom: 4px;
   padding: 4px;
 }
 
 .nav-btn {
-  background: rgba(124, 58, 237, 0.2);
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: 6px;
-  color: #7c3aed;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 8px 12px;
-  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 36px;
+  transition: transform 0.2s;
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: rgba(124, 58, 237, 0.3);
   transform: translateY(-1px);
 }
 
 .nav-btn:disabled {
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .page-display {
