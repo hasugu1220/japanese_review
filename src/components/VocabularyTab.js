@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { vocabularyData, getCategories } from '../data/vocabularyData';
 import '../styles/VocabularyTab.css';
 
-function VocabularyTab() {
+function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 50;
   const [mode, setMode] = useState('study'); // study or known
-  const [level, setLevel] = useState('lesson'); // lesson, n5, n4, n3
-  const [category, setCategory] = useState('all'); // all or specific category
+  const level = vocabularySettings?.level || 'lesson';
+  const category = vocabularySettings?.category || 'all';
   const [knownWords, setKnownWords] = useState(() => {
     const saved = localStorage.getItem('knownWords');
     return saved ? JSON.parse(saved) : [];
@@ -46,7 +46,6 @@ function VocabularyTab() {
     setShowAllFurigana(false);
     setShowAllMeaning(false);
     setWordStates({});
-    setCategory('all');
   }, [level]);
 
   // Filter words based on category and known status
@@ -133,6 +132,16 @@ function VocabularyTab() {
     setShowAllMeaning(false);
     
   }, [category, level, mode]);
+
+  // Update settings when level/category changes from menu
+  useEffect(() => {
+    if (setVocabularySettings) {
+      setVocabularySettings({
+        level: level,
+        category: category
+      });
+    }
+  }, [level, category, setVocabularySettings]);
 
   // Touch handlers for swipe navigation
   const onTouchStart = (e) => {
@@ -317,62 +326,6 @@ function VocabularyTab() {
 
       {mode === 'study' ? (
         <div id="study-mode">
-          {/* Controls */}
-          <div className="compact-controls">
-            <select 
-              className="compact-dropdown" 
-              value={level} 
-              onChange={(e) => {
-                const newLevel = e.target.value;
-                // Immediately clear filtered words to prevent flash
-                setFilteredWords([]);
-                setLevel(newLevel);
-                setCurrentPage(0);
-                setWordStates({});
-                setShowAllFurigana(false);
-                setShowAllMeaning(false);
-                // Scroll to top when changing level
-                setTimeout(() => {
-                  const vocabList = document.getElementById('vocab-list');
-                  if (vocabList) {
-                    vocabList.scrollTop = 0;
-                  }
-                  window.scrollTo(0, 0);
-                }, 0);
-              }}
-            >
-              <option value="lesson">수업 단어</option>
-              <option value="n5">JLPT N5</option>
-              <option value="n4">JLPT N4</option>
-              <option value="n3">JLPT N3</option>
-            </select>
-            <select 
-              className="compact-dropdown" 
-              value={category} 
-              onChange={(e) => {
-                // Immediately clear filtered words to prevent flash
-                setFilteredWords([]);
-                setCategory(e.target.value);
-                setCurrentPage(0);
-                setWordStates({});
-                setShowAllFurigana(false);
-                setShowAllMeaning(false);
-                // Scroll to top when changing category
-                setTimeout(() => {
-                  const vocabList = document.getElementById('vocab-list');
-                  if (vocabList) {
-                    vocabList.scrollTop = 0;
-                  }
-                  window.scrollTo(0, 0);
-                }, 0);
-              }}
-            >
-              <option value="all">전체 보기</option>
-              {getCategoriesList().map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
 
           <div className="action-controls">
             <button className="compact-action-btn" onClick={toggleAllFurigana}>
@@ -386,19 +339,19 @@ function VocabularyTab() {
             </button>
           </div>
 
-          <div className="page-navigation-row">
+          <div className="page-navigation-container">
             <button 
-              className="nav-btn" 
+              className="nav-btn-aligned" 
               onClick={goToPrevPage}
               disabled={currentPage === 0 || totalPages <= 1}
             >
               ← 이전
             </button>
-            <span className="page-display">
+            <span className="page-display-center">
               {currentPage + 1} / {totalPages || 1}
             </span>
             <button 
-              className="nav-btn" 
+              className="nav-btn-aligned" 
               onClick={goToNextPage}
               disabled={currentPage === totalPages - 1 || totalPages <= 1}
             >

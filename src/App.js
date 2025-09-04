@@ -7,6 +7,11 @@ import SentenceQuizTab from './components/SentenceQuizTab';
 function App() {
   const [activeTab, setActiveTab] = useState('vocabulary');
   const [showMenu, setShowMenu] = useState(false);
+  const [showVocabMenu, setShowVocabMenu] = useState(false);
+  const [vocabularySettings, setVocabularySettings] = useState({
+    level: 'lesson',
+    category: 'all'
+  });
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -22,6 +27,7 @@ function App() {
     const handleClickOutside = (event) => {
       if (showMenu && !event.target.closest('.menu-container')) {
         setShowMenu(false);
+        setShowVocabMenu(false);
       }
     };
 
@@ -48,11 +54,65 @@ function App() {
             {showMenu && (
               <div className="menu-dropdown show">
                 <div 
-                  className={`menu-item ${activeTab === 'vocabulary' ? 'active' : ''}`}
-                  onClick={() => switchTab('vocabulary')}
+                  className={`menu-item vocab-toggle ${activeTab === 'vocabulary' ? 'active' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (activeTab === 'vocabulary') {
+                      setShowVocabMenu(!showVocabMenu);
+                    } else {
+                      switchTab('vocabulary');
+                      setShowVocabMenu(true);
+                    }
+                  }}
                 >
-                  단어장
+                  <span>단어장</span>
+                  {activeTab === 'vocabulary' && (
+                    <span className={`menu-arrow ${showVocabMenu ? 'expanded' : ''}`}>▼</span>
+                  )}
                 </div>
+                {activeTab === 'vocabulary' && showVocabMenu && (
+                  <div className="vocab-submenu">
+                    <div className="menu-separator"></div>
+                    <div className="submenu-section">
+                      <div className="submenu-title">레벨</div>
+                      <div className="submenu-buttons">
+                        {[
+                          { value: 'lesson', label: '수업' },
+                          { value: 'n5', label: 'N5' },
+                          { value: 'n4', label: 'N4' },
+                          { value: 'n3', label: 'N3' }
+                        ].map(level => (
+                          <button
+                            key={level.value}
+                            className={`submenu-btn ${vocabularySettings.level === level.value ? 'active' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setVocabularySettings(prev => ({...prev, level: level.value}));
+                            }}
+                          >
+                            {level.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="submenu-section">
+                      <div className="submenu-title">카테고리</div>
+                      <select 
+                        className="submenu-select"
+                        value={vocabularySettings.category}
+                        onChange={(e) => setVocabularySettings(prev => ({...prev, category: e.target.value}))}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <option value="all">전체 보기</option>
+                        <option value="동사">동사</option>
+                        <option value="명사">명사</option>
+                        <option value="い형용사">い형용사</option>
+                        <option value="な형용사">な형용사</option>
+                        <option value="부사기타">부사기타</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
                 <div 
                   className={`menu-item ${activeTab === 'wordQuiz' ? 'active' : ''}`}
                   onClick={() => switchTab('wordQuiz')}
@@ -72,7 +132,7 @@ function App() {
 
         {/* Tab Content */}
         <div className="tab-container">
-          {activeTab === 'vocabulary' && <VocabularyTab />}
+          {activeTab === 'vocabulary' && <VocabularyTab vocabularySettings={vocabularySettings} setVocabularySettings={setVocabularySettings} />}
           {activeTab === 'wordQuiz' && <WordQuizTab />}
           {activeTab === 'sentenceQuiz' && <SentenceQuizTab />}
         </div>

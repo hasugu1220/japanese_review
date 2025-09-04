@@ -1,6 +1,9 @@
 /* Vocabulary Tab Styles */
 .vocabulary-tab {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Mode Selector */
@@ -95,17 +98,17 @@
   margin-left: 2px;
 }
 
-/* Page Navigation Row */
-.page-navigation-row {
+/* Page Navigation Container */
+.page-navigation-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
+  justify-content: space-between;
   margin-bottom: 4px;
-  padding: 4px;
+  padding: 0;
+  gap: 16px;
 }
 
-.nav-btn {
+.nav-btn-aligned {
   background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
   border: none;
   border-radius: 8px;
@@ -113,25 +116,26 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  padding: 10px 36px;
+  padding: 10px;
   transition: transform 0.2s;
+  flex: 1;
 }
 
-.nav-btn:hover:not(:disabled) {
+.nav-btn-aligned:hover:not(:disabled) {
   transform: translateY(-1px);
 }
 
-.nav-btn:disabled {
+.nav-btn-aligned:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.page-display {
+.page-display-center {
   color: #7c3aed;
   font-size: 14px;
   font-weight: 700;
-  min-width: 40px;
   text-align: center;
+  flex: 1;
 }
 
 /* Vocabulary List */
@@ -139,7 +143,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: calc(100vh - 100px);
+  flex: 1;
   overflow-y: auto;
   padding-bottom: 15px;
 }
@@ -176,7 +180,7 @@
 }
 
 .japanese-word {
-  font-size: 1.76rem;
+  font-size: 1.94rem;
   font-weight: 700;
   line-height: 1.2;
   cursor: pointer;
@@ -199,9 +203,9 @@
 .action-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 60px 60px;
+  grid-template-rows: 54px 54px;
   gap: 6px;
-  width: 200px;
+  width: 180px;
   justify-self: end;
 }
 
@@ -211,14 +215,14 @@
   color: white;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  min-height: 60px;
-  padding: 8px;
+  min-height: 54px;
+  padding: 7px;
 }
 
 .action-btn-small:active {
@@ -244,7 +248,7 @@
 .btn-reset {
   background: rgba(99, 102, 241, 0.25);
   border-color: rgba(99, 102, 241, 0.5);
-  font-size: 20px;
+  font-size: 18px;
 }
 
 /* Known Mode */
