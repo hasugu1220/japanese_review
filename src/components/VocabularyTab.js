@@ -133,15 +133,20 @@ function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
     
   }, [category, level, mode]);
 
-  // Update settings when level/category changes from menu
+  // Update settings when level/category changes from menu and reset page
   useEffect(() => {
-    if (setVocabularySettings) {
+    if (setVocabularySettings && (vocabularySettings?.level !== level || vocabularySettings?.category !== category)) {
       setVocabularySettings({
         level: level,
         category: category
       });
+      // Reset page and clear states when settings change
+      setCurrentPage(0);
+      setWordStates({});
+      setShowAllFurigana(false);
+      setShowAllMeaning(false);
     }
-  }, [level, category, setVocabularySettings]);
+  }, [level, category, setVocabularySettings, vocabularySettings]);
 
   // Touch handlers for swipe navigation
   const onTouchStart = (e) => {
@@ -165,10 +170,6 @@ function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
     }
   };
 
-  // Get categories for current level
-  const getCategoriesList = () => {
-    return getCategories(level);
-  };
 
   // Toggle word state
   const toggleWordState = (wordId, state) => {
