@@ -82,7 +82,6 @@
   border-radius: 6px;
   margin-bottom: 4px;
   font-size: 13px;
-  gap: 12px;
 }
 
 .mini-stat {
@@ -96,25 +95,43 @@
   margin-left: 2px;
 }
 
-.mini-nav-btn {
+/* Page Navigation Row */
+.page-navigation-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 4px;
+  padding: 4px;
+}
+
+.nav-btn {
   background: rgba(124, 58, 237, 0.2);
   border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: 4px;
+  border-radius: 6px;
   color: #7c3aed;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
-  padding: 4px 8px;
+  padding: 8px 12px;
   transition: all 0.2s;
 }
 
-.mini-nav-btn:hover:not(:disabled) {
+.nav-btn:hover:not(:disabled) {
   background: rgba(124, 58, 237, 0.3);
   transform: translateY(-1px);
 }
 
-.mini-nav-btn:disabled {
+.nav-btn:disabled {
   cursor: not-allowed;
+}
+
+.page-display {
+  color: #7c3aed;
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
 }
 
 /* Vocabulary List */

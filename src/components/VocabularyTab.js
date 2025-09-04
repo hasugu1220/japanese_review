@@ -386,20 +386,20 @@ function VocabularyTab() {
             </button>
           </div>
 
-          <div className="mini-stats">
+          <div className="page-navigation-row">
             <button 
-              className="mini-nav-btn" 
+              className="nav-btn" 
               onClick={goToPrevPage}
               disabled={currentPage === 0 || totalPages <= 1}
               style={{opacity: currentPage === 0 || totalPages <= 1 ? 0.3 : 1}}
             >
               ←
             </button>
-            <span className="mini-stat">
-              페이지 <strong>{currentPage + 1}</strong> / <strong>{totalPages || 1}</strong>
+            <span className="page-display">
+              {currentPage + 1} / {totalPages || 1}
             </span>
             <button 
-              className="mini-nav-btn" 
+              className="nav-btn" 
               onClick={goToNextPage}
               disabled={currentPage === totalPages - 1 || totalPages <= 1}
               style={{opacity: currentPage === totalPages - 1 || totalPages <= 1 ? 0.3 : 1}}
