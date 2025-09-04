@@ -15,14 +15,14 @@
 
 .level-btn {
   flex: 1;
-  padding: 10px;
+  padding: 8px;
   border: none;
   background: transparent;
   color: #666;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   transition: all 0.3s ease;
 }
 
@@ -39,15 +39,15 @@
 /* Quiz Card */
 .quiz-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  padding: 32px 24px;
-  margin-bottom: 24px;
-  min-height: 320px;
+  border-radius: 18px;
+  padding: 28px 20px;
+  margin-bottom: 20px;
+  min-height: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
 /* Quiz Question */
