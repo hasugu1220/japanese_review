@@ -99,7 +99,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
   padding-bottom: 15px;
 }
@@ -216,7 +216,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 160px);
   overflow-y: auto;
 }
 
@@ -259,4 +259,37 @@
 /* Hidden State */
 .hidden {
   display: none;
+}
+
+/* Mobile Optimizations */
+@media screen and (max-height: 800px) {
+  .interactive-vocab-list {
+    max-height: calc(100vh - 90px);
+  }
+  
+  .known-words-grid {
+    max-height: calc(100vh - 140px);
+  }
+}
+
+/* Galaxy S25+ and similar large phones */
+@media screen and (min-height: 900px) and (max-width: 500px) {
+  .interactive-vocab-list {
+    max-height: calc(100vh - 80px);
+  }
+  
+  .known-words-grid {
+    max-height: calc(100vh - 120px);
+  }
+}
+
+/* iPhone and similar phones */
+@media screen and (max-height: 950px) and (max-width: 430px) {
+  .interactive-vocab-list {
+    max-height: calc(100vh - 85px);
+  }
+  
+  .known-words-grid {
+    max-height: calc(100vh - 130px);
+  }
 }
