@@ -1,0 +1,17 @@
+{
+  "short_name": "Japanese Review",
+  "name": "Japanese Vocabulary Review App",
+  "description": "스마트 반복 단어장 - 일본어 단어 학습 앱",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#7c3aed",
+  "background_color": "#ffffff",
+  "orientation": "portrait"
+}

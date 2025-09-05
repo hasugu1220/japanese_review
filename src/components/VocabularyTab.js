@@ -26,18 +26,19 @@ function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
   useEffect(() => {
     const vocabulary = vocabularyData[level] || vocabularyData.lesson;
     const words = [];
-    let index = 0;
+    let globalIndex = 0;
     
     // Process categories in original order
     Object.entries(vocabulary).forEach(([cat, items]) => {
-      items.forEach((item) => {
+      items.forEach((item, categoryIndex) => {
         words.push({
           ...item,
           category: cat,
           level: level,
           id: `${level}-${cat}-${item.jp}`,
-          levelIndex: index++,
-          originalOrder: index
+          levelIndex: globalIndex++,
+          categoryIndex: categoryIndex,
+          originalOrder: globalIndex
         });
       });
     });
@@ -372,8 +373,16 @@ function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
             {filteredWords.length === 0 ? (
               <div className="empty-message">모든 단어를 학습했습니다! 🎉</div>
             ) : (
-              paginatedWords.sort((a, b) => a.levelIndex - b.levelIndex).map((word) => {
-                const displayIndex = word.levelIndex + 1;
+              paginatedWords.sort((a, b) => {
+                // If filtering by category, use categoryIndex; otherwise use levelIndex
+                if (category !== 'all') {
+                  return a.categoryIndex - b.categoryIndex;
+                } else {
+                  return a.levelIndex - b.levelIndex;
+                }
+              }).map((word, index) => {
+                // Calculate display index based on current page and position
+                const displayIndex = currentPage * wordsPerPage + index + 1;
                 return (
                 <div key={word.id} className="interactive-word-card">
                   <span style={{position: 'absolute', top: '10px', left: '15px', color: 'rgba(255,255,255,0.7)', fontSize: '14px', fontWeight: '600'}}>
