@@ -26,14 +26,17 @@ function App() {
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       if (showMenu && !event.target.closest('.menu-container')) {
+        // Prevent any button functionality when clicking empty space
+        event.preventDefault();
+        event.stopPropagation();
         setShowMenu(false);
         setShowVocabMenu(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('click', handleClickOutside, true);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside, true);
     };
   }, [showMenu]);
 
