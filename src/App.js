@@ -3,6 +3,7 @@ import './styles/App.css';
 import VocabularyTab from './components/VocabularyTab';
 import WordQuizTab from './components/WordQuizTab';
 import SentenceQuizTab from './components/SentenceQuizTab';
+import ConversationTab from './components/ConversationTab';
 
 function App() {
   const [activeTab, setActiveTab] = useState('vocabulary');
@@ -14,12 +15,17 @@ function App() {
   });
 
   const toggleMenu = () => {
+    if (showMenu) {
+      // When closing menu, reset vocab submenu state
+      setShowVocabMenu(false);
+    }
     setShowMenu(!showMenu);
   };
 
   const switchTab = (tab) => {
     setActiveTab(tab);
     setShowMenu(false);
+    setShowVocabMenu(false);
   };
 
   // Close menu when clicking outside
@@ -49,6 +55,7 @@ function App() {
             {activeTab === 'vocabulary' && '스마트 반복 단어장'}
             {activeTab === 'wordQuiz' && '단어 퀴즈'}
             {activeTab === 'sentenceQuiz' && '문장 퀴즈'}
+            {activeTab === 'conversation' && '수업 대화문'}
           </h2>
           <div className="menu-container">
             <button className="menu-btn" onClick={toggleMenu}>
@@ -128,6 +135,12 @@ function App() {
                 >
                   문장 퀴즈
                 </div>
+                <div 
+                  className={`menu-item ${activeTab === 'conversation' ? 'active' : ''}`}
+                  onClick={() => switchTab('conversation')}
+                >
+                  수업 대화문
+                </div>
               </div>
             )}
           </div>
@@ -138,6 +151,7 @@ function App() {
           {activeTab === 'vocabulary' && <VocabularyTab vocabularySettings={vocabularySettings} setVocabularySettings={setVocabularySettings} />}
           {activeTab === 'wordQuiz' && <WordQuizTab />}
           {activeTab === 'sentenceQuiz' && <SentenceQuizTab />}
+          {activeTab === 'conversation' && <ConversationTab />}
         </div>
       </div>
     </div>

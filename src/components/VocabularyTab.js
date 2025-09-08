@@ -291,17 +291,17 @@ function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
         <button 
           className={`mode-btn ${mode === 'study' ? 'active' : ''}`}
           onClick={() => {
-            // Immediately clear filtered words to prevent flash
-            setFilteredWords([]);
-            setCurrentPage(0);
-            setMode('study');
-            setTimeout(() => {
-              const vocabList = document.getElementById('vocab-list');
-              if (vocabList) {
-                vocabList.scrollTop = 0;
-              }
-              window.scrollTo(0, 0);
-            }, 0);
+            if (mode !== 'study') {
+              setCurrentPage(0);
+              setMode('study');
+              setTimeout(() => {
+                const vocabList = document.getElementById('vocab-list');
+                if (vocabList) {
+                  vocabList.scrollTop = 0;
+                }
+                window.scrollTo(0, 0);
+              }, 0);
+            }
           }}
         >
           학습할 단어 ({allWords.length - knownWords.length})
@@ -309,17 +309,17 @@ function VocabularyTab({ vocabularySettings, setVocabularySettings }) {
         <button 
           className={`mode-btn ${mode === 'known' ? 'active' : ''}`}
           onClick={() => {
-            // Immediately clear filtered words to prevent flash
-            setFilteredWords([]);
-            setCurrentPage(0);
-            setMode('known');
-            setTimeout(() => {
-              const knownList = document.getElementById('known-list');
-              if (knownList) {
-                knownList.scrollTop = 0;
-              }
-              window.scrollTo(0, 0);
-            }, 0);
+            if (mode !== 'known') {
+              setCurrentPage(0);
+              setMode('known');
+              setTimeout(() => {
+                const knownList = document.getElementById('known-list');
+                if (knownList) {
+                  knownList.scrollTop = 0;
+                }
+                window.scrollTo(0, 0);
+              }, 0);
+            }
           }}
         >
           완료한 단어 ({knownWords.length})

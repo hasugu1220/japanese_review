@@ -54,7 +54,8 @@
       "Read(/C:\\dev\\japanese_review\\src\\components/**)",
       "Read(/C:\\dev\\japanese_review\\src\\styles/**)",
       "Read(/C:\\dev\\japanese_review\\src\\styles/**)",
-      "Read(/C:\\dev\\japanese_review\\public/**)"
+      "Read(/C:\\dev\\japanese_review\\public/**)",
+      "Bash(gh run list:*)"
     ],
     "deny": [],
     "ask": []

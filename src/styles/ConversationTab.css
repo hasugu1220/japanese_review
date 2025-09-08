@@ -1,0 +1,252 @@
+.conversation-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  background-color: #f8fafc;
+  overflow-y: auto;
+}
+
+.conversation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.conversation-header h3 {
+  color: #7c3aed;
+  margin: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.conversation-header p {
+  color: #64748b;
+  margin: 5px 0 0 0;
+  font-size: 0.9em;
+}
+
+.back-btn {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #6d28d9;
+  transform: translateY(-2px);
+}
+
+.lesson-info h3, .lesson-info h4 {
+  margin: 0;
+  color: #7c3aed;
+}
+
+.lesson-info h4 {
+  color: #64748b;
+  font-weight: normal;
+  font-size: 1em;
+}
+
+.furigana-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.furigana-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 0.9em;
+}
+
+.furigana-toggle input[type="checkbox"] {
+  accent-color: #7c3aed;
+}
+
+/* Lesson List Styles */
+.lesson-list {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.lesson-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.lesson-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.15);
+  border-color: #7c3aed;
+}
+
+.lesson-date {
+  color: #7c3aed;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 8px;
+}
+
+.lesson-title {
+  color: #1e293b;
+  font-size: 1em;
+  font-weight: 500;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.lesson-count {
+  color: #64748b;
+  font-size: 0.85em;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Conversation Cards Styles */
+.conversation-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.conversation-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #7c3aed;
+  transition: all 0.2s ease;
+}
+
+.conversation-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.conversation-korean {
+  font-size: 1.1em;
+  font-weight: 500;
+  color: #1e293b;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.conversation-japanese {
+  font-size: 1em;
+  color: #7c3aed;
+  font-weight: 500;
+  margin-bottom: 8px;
+  line-height: 1.5;
+  font-family: 'Noto Sans Japanese', 'Hiragino Sans', 'MS Gothic', sans-serif;
+}
+
+.conversation-furigana {
+  font-size: 0.85em;
+  color: #64748b;
+  font-style: italic;
+  line-height: 1.4;
+  font-family: 'Noto Sans Japanese', 'Hiragino Sans', 'MS Gothic', sans-serif;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .conversation-container {
+    padding: 15px 10px;
+  }
+
+  .conversation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .lesson-info {
+    text-align: center;
+    width: 100%;
+  }
+
+  .furigana-toggle {
+    align-self: flex-end;
+  }
+
+  .lesson-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .lesson-card {
+    padding: 15px;
+  }
+
+  .conversation-card {
+    padding: 15px;
+    margin-left: 0;
+  }
+
+  .conversation-card:hover {
+    transform: translateY(-2px);
+    transform: translateX(0);
+  }
+
+  .conversation-header h3 {
+    font-size: 1.3em;
+  }
+
+  .back-btn {
+    padding: 8px 16px;
+    font-size: 0.85em;
+  }
+}
+
+@media (max-width: 480px) {
+  .conversation-container {
+    padding: 10px 8px;
+  }
+
+  .conversation-header {
+    gap: 10px;
+  }
+
+  .conversation-card {
+    padding: 12px;
+  }
+
+  .lesson-card {
+    padding: 12px;
+  }
+
+  .conversation-korean {
+    font-size: 1em;
+  }
+
+  .conversation-japanese {
+    font-size: 0.95em;
+  }
+
+  .conversation-furigana {
+    font-size: 0.8em;
+  }
+}

@@ -1,17 +1,31 @@
 {
-  "short_name": "Japanese Review",
-  "name": "Japanese Vocabulary Review App",
+  "short_name": "일본어학습",
+  "name": "일본어 스마트 단어장",
   "description": "스마트 반복 단어장 - 일본어 단어 학습 앱",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "192x192",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon.ico", 
+      "sizes": "512x512",
+      "type": "image/x-icon"
     }
   ],
-  "start_url": ".",
+  "start_url": "/japanese_review/",
+  "scope": "/japanese_review/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "theme_color": "#7c3aed",
   "background_color": "#ffffff",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "categories": ["education", "productivity"],
+  "lang": "ko-KR"
 }
