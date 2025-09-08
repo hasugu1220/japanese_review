@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/japanese_review/static/css/main.15d6ffd5.css",
-    "main.js": "/japanese_review/static/js/main.922de0b9.js",
+    "main.css": "/japanese_review/static/css/main.7eb63f8d.css",
+    "main.js": "/japanese_review/static/js/main.8879010a.js",
     "index.html": "/japanese_review/index.html",
-    "main.15d6ffd5.css.map": "/japanese_review/static/css/main.15d6ffd5.css.map",
-    "main.922de0b9.js.map": "/japanese_review/static/js/main.922de0b9.js.map"
+    "main.7eb63f8d.css.map": "/japanese_review/static/css/main.7eb63f8d.css.map",
+    "main.8879010a.js.map": "/japanese_review/static/js/main.8879010a.js.map"
   },
   "entrypoints": [
-    "static/css/main.15d6ffd5.css",
-    "static/js/main.922de0b9.js"
+    "static/css/main.7eb63f8d.css",
+    "static/js/main.8879010a.js"
   ]
 }
