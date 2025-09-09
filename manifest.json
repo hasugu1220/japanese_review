@@ -41,5 +41,13 @@
   "background_color": "#ffffff",
   "orientation": "portrait",
   "categories": ["education", "productivity"],
-  "lang": "ko-KR"
+  "lang": "ko-KR",
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "handle_links": "preferred",
+  "edge_side_panel": {
+    "preferred_width": 480
+  }
 }
