@@ -1,8 +1,7 @@
-const CACHE_NAME = 'japanese-review-v2';
+const CACHE_NAME = 'japanese-review-v3';
 const urlsToCache = [
   '/japanese_review/',
-  '/japanese_review/static/js/bundle.js',
-  '/japanese_review/static/css/main.css',
+  '/japanese_review/index.html',
   '/japanese_review/manifest.json',
   '/japanese_review/icon-192x192.png',
   '/japanese_review/icon-512x512.png'
